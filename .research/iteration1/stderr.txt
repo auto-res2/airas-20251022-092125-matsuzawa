@@ -86,3 +86,91 @@ warning: No `requires-python` value found in the workspace. Defaulting to `>=3.1
 /home/toma/t-80-8-b-04/_work/airas-20251022-092125-matsuzawa/airas-20251022-092125-matsuzawa/.venv/lib/python3.11/site-packages/hydra/_internal/defaults_list.py:251: UserWarning: In 'config': Defaults list is missing `_self_`. See https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/default_composition_order for more information
   warnings.warn(msg, UserWarning)
   0%|          | 0.00/170M [00:00<?, ?B/s]  0%|          | 32.8k/170M [00:00<14:59, 190kB/s]  0%|          | 65.5k/170M [00:00<14:51, 191kB/s]  0%|          | 98.3k/170M [00:00<14:47, 192kB/s]  0%|          | 229k/170M [00:00<06:50, 415kB/s]   0%|          | 459k/170M [00:00<03:50, 737kB/s]  1%|          | 918k/170M [00:01<02:01, 1.39MB/s]  1%|          | 1.84M/170M [00:01<01:03, 2.67MB/s]  2%|▏         | 3.70M/170M [00:01<00:31, 5.25MB/s]  4%|▍         | 6.82M/170M [00:01<00:17, 9.27MB/s]  6%|▌         | 9.96M/170M [00:01<00:13, 11.9MB/s]  8%|▊         | 13.1M/170M [00:01<00:11, 13.8MB/s] 10%|▉         | 16.2M/170M [00:02<00:10, 15.2MB/s] 11%|█▏        | 19.4M/170M [00:02<00:09, 16.0MB/s] 13%|█▎        | 22.5M/170M [00:02<00:08, 16.9MB/s] 15%|█▌        | 25.6M/170M [00:02<00:08, 17.0MB/s] 17%|█▋        | 28.7M/170M [00:02<00:08, 17.4MB/s] 19%|█▊        | 31.8M/170M [00:02<00:07, 17.9MB/s] 20%|█▉        | 33.9M/170M [00:03<00:07, 18.6MB/s] 21%|██        | 35.8M/170M [00:03<00:07, 16.9MB/s] 22%|██▏       | 38.1M/170M [00:03<00:07, 17.7MB/s] 24%|██▎       | 40.2M/170M [00:03<00:07, 18.6MB/s] 25%|██▍       | 42.1M/170M [00:03<00:07, 16.5MB/s] 26%|██▌       | 44.4M/170M [00:03<00:08, 15.5MB/s] 28%|██▊       | 47.3M/170M [00:03<00:07, 15.9MB/s] 29%|██▉       | 50.2M/170M [00:04<00:07, 16.1MB/s] 31%|███       | 53.2M/170M [00:04<00:07, 16.3MB/s] 33%|███▎      | 56.2M/170M [00:04<00:06, 16.4MB/s] 35%|███▍      | 59.3M/170M [00:04<00:06, 16.6MB/s] 36%|███▋      | 62.2M/170M [00:04<00:06, 16.5MB/s] 38%|███▊      | 65.2M/170M [00:04<00:06, 16.7MB/s] 40%|████      | 68.3M/170M [00:05<00:06, 16.8MB/s] 42%|████▏     | 71.4M/170M [00:05<00:05, 17.1MB/s] 44%|████▎     | 74.3M/170M [00:05<00:05, 16.9MB/s] 45%|████▌     | 77.4M/170M [00:05<00:05, 17.0MB/s] 47%|████▋     | 80.4M/170M [00:05<00:05, 17.1MB/s] 49%|████▉     | 83.6M/170M [00:06<00:04, 17.4MB/s] 51%|█████     | 86.7M/170M [00:06<00:04, 17.7MB/s] 53%|█████▎    | 89.8M/170M [00:06<00:04, 17.8MB/s] 54%|█████▍    | 92.8M/170M [00:06<00:04, 17.3MB/s] 56%|█████▋    | 95.9M/170M [00:06<00:04, 17.5MB/s] 58%|█████▊    | 99.0M/170M [00:06<00:04, 17.4MB/s] 60%|█████▉    | 102M/170M [00:07<00:03, 17.7MB/s]  62%|██████▏   | 105M/170M [00:07<00:03, 17.9MB/s] 63%|██████▎   | 108M/170M [00:07<00:03, 17.2MB/s] 65%|██████▌   | 111M/170M [00:07<00:03, 17.5MB/s] 67%|██████▋   | 114M/170M [00:07<00:03, 17.0MB/s] 69%|██████▊   | 117M/170M [00:07<00:03, 17.0MB/s] 70%|███████   | 120M/170M [00:08<00:02, 17.4MB/s] 72%|███████▏  | 123M/170M [00:08<00:02, 17.2MB/s] 74%|███████▍  | 126M/170M [00:08<00:02, 17.5MB/s] 76%|███████▌  | 129M/170M [00:08<00:02, 17.7MB/s] 78%|███████▊  | 132M/170M [00:08<00:02, 17.8MB/s] 80%|███████▉  | 136M/170M [00:08<00:01, 17.8MB/s] 81%|████████▏ | 139M/170M [00:09<00:01, 17.8MB/s] 83%|████████▎ | 142M/170M [00:09<00:01, 18.0MB/s] 85%|████████▌ | 145M/170M [00:09<00:01, 18.1MB/s] 87%|████████▋ | 148M/170M [00:09<00:01, 16.7MB/s] 89%|████████▊ | 151M/170M [00:09<00:01, 16.6MB/s] 90%|█████████ | 154M/170M [00:10<00:00, 16.6MB/s] 92%|█████████▏| 157M/170M [00:10<00:00, 16.6MB/s] 94%|█████████▎| 160M/170M [00:10<00:00, 16.6MB/s] 95%|█████████▌| 163M/170M [00:10<00:00, 16.7MB/s] 97%|█████████▋| 166M/170M [00:10<00:00, 16.7MB/s] 99%|█████████▉| 169M/170M [00:10<00:00, 17.1MB/s]100%|██████████| 170M/170M [00:10<00:00, 15.5MB/s]
+Using CPython 3.11.13
+Creating virtual environment at: .venv
+warning: No `requires-python` value found in the workspace. Defaulting to `>=3.11`.
+Resolved 76 packages in 96ms
+Installed 73 packages in 4.48s
+ + alembic==1.17.0
+ + annotated-types==0.7.0
+ + antlr4-python3-runtime==4.9.3
+ + certifi==2025.10.5
+ + charset-normalizer==3.4.4
+ + click==8.3.0
+ + colorlog==6.10.1
+ + contourpy==1.3.3
+ + cycler==0.12.1
+ + filelock==3.20.0
+ + fonttools==4.60.1
+ + fsspec==2025.9.0
+ + gitdb==4.0.12
+ + gitpython==3.1.45
+ + greenlet==3.2.4
+ + hydra-core==1.3.2
+ + idna==3.11
+ + jinja2==3.1.6
+ + joblib==1.5.2
+ + kiwisolver==1.4.9
+ + mako==1.3.10
+ + markupsafe==3.0.3
+ + matplotlib==3.10.7
+ + mpmath==1.3.0
+ + networkx==3.5
+ + numpy==2.3.4
+ + nvidia-cublas-cu12==12.8.4.1
+ + nvidia-cuda-cupti-cu12==12.8.90
+ + nvidia-cuda-nvrtc-cu12==12.8.93
+ + nvidia-cuda-runtime-cu12==12.8.90
+ + nvidia-cudnn-cu12==9.10.2.21
+ + nvidia-cufft-cu12==11.3.3.83
+ + nvidia-cufile-cu12==1.13.1.3
+ + nvidia-curand-cu12==10.3.9.90
+ + nvidia-cusolver-cu12==11.7.3.90
+ + nvidia-cusparse-cu12==12.5.8.93
+ + nvidia-cusparselt-cu12==0.7.1
+ + nvidia-nccl-cu12==2.27.5
+ + nvidia-nvjitlink-cu12==12.8.93
+ + nvidia-nvshmem-cu12==3.3.20
+ + nvidia-nvtx-cu12==12.8.90
+ + omegaconf==2.3.0
+ + optuna==4.5.0
+ + packaging==25.0
+ + pandas==2.3.3
+ + pillow==12.0.0
+ + platformdirs==4.5.0
+ + protobuf==6.33.0
+ + pydantic==2.12.3
+ + pydantic-core==2.41.4
+ + pyparsing==3.2.5
+ + python-dateutil==2.9.0.post0
+ + pytz==2025.2
+ + pyyaml==6.0.3
+ + requests==2.32.5
+ + scikit-learn==1.7.2
+ + scipy==1.16.2
+ + seaborn==0.13.2
+ + sentry-sdk==2.42.1
+ + six==1.17.0
+ + smmap==5.0.2
+ + sqlalchemy==2.0.44
+ + sympy==1.14.0
+ + threadpoolctl==3.6.0
+ + torch==2.9.0
+ + torchvision==0.24.0
+ + tqdm==4.67.1
+ + triton==3.5.0
+ + typing-extensions==4.15.0
+ + typing-inspection==0.4.2
+ + tzdata==2025.2
+ + urllib3==2.5.0
+ + wandb==0.22.2
+warning: No `requires-python` value found in the workspace. Defaulting to `>=3.11`.
+/home/toma/t-80-8-b-04/_work/airas-20251022-092125-matsuzawa/airas-20251022-092125-matsuzawa/.venv/lib/python3.11/site-packages/hydra/_internal/defaults_list.py:251: UserWarning: In 'config': Defaults list is missing `_self_`. See https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/default_composition_order for more information
+  warnings.warn(msg, UserWarning)
+/home/toma/t-80-8-b-04/_work/airas-20251022-092125-matsuzawa/airas-20251022-092125-matsuzawa/.venv/lib/python3.11/site-packages/pydantic/_internal/_generate_schema.py:2249: UnsupportedFieldAttributeWarning: The 'repr' attribute with value False was provided to the `Field()` function, which has no effect in the context it was used. 'repr' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+/home/toma/t-80-8-b-04/_work/airas-20251022-092125-matsuzawa/airas-20251022-092125-matsuzawa/.venv/lib/python3.11/site-packages/pydantic/_internal/_generate_schema.py:2249: UnsupportedFieldAttributeWarning: The 'frozen' attribute with value True was provided to the `Field()` function, which has no effect in the context it was used. 'frozen' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+/home/toma/t-80-8-b-04/_work/airas-20251022-092125-matsuzawa/airas-20251022-092125-matsuzawa/.venv/lib/python3.11/site-packages/hydra/_internal/defaults_list.py:251: UserWarning: In 'config': Defaults list is missing `_self_`. See https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/default_composition_order for more information
+  warnings.warn(msg, UserWarning)
+  0%|          | 0.00/170M [00:00<?, ?B/s]  0%|          | 32.8k/170M [00:00<15:50, 179kB/s]  0%|          | 65.5k/170M [00:00<15:39, 181kB/s]  0%|          | 98.3k/170M [00:00<15:39, 181kB/s]  0%|          | 229k/170M [00:00<07:11, 395kB/s]   0%|          | 459k/170M [00:00<03:58, 713kB/s]  1%|          | 918k/170M [00:01<02:07, 1.33MB/s]  1%|          | 1.84M/170M [00:01<01:05, 2.56MB/s]  2%|▏         | 3.67M/170M [00:01<00:33, 4.97MB/s]  4%|▍         | 6.59M/170M [00:01<00:19, 8.39MB/s]  6%|▌         | 9.57M/170M [00:01<00:14, 10.8MB/s]  7%|▋         | 12.6M/170M [00:01<00:12, 12.7MB/s]  9%|▉         | 15.8M/170M [00:02<00:11, 14.0MB/s] 11%|█         | 18.8M/170M [00:02<00:10, 14.9MB/s] 13%|█▎        | 22.0M/170M [00:02<00:09, 15.6MB/s] 15%|█▍        | 25.1M/170M [00:02<00:09, 16.1MB/s] 17%|█▋        | 28.2M/170M [00:02<00:08, 16.5MB/s] 18%|█▊        | 31.4M/170M [00:03<00:08, 16.7MB/s] 20%|██        | 34.5M/170M [00:03<00:08, 16.8MB/s] 22%|██▏       | 37.6M/170M [00:03<00:07, 16.9MB/s] 24%|██▍       | 40.7M/170M [00:03<00:07, 17.0MB/s] 26%|██▌       | 43.8M/170M [00:03<00:07, 17.2MB/s] 28%|██▊       | 47.0M/170M [00:04<00:07, 17.1MB/s] 29%|██▉       | 49.8M/170M [00:04<00:07, 16.4MB/s] 31%|███       | 52.9M/170M [00:04<00:07, 16.6MB/s] 33%|███▎      | 55.9M/170M [00:04<00:06, 16.4MB/s] 35%|███▍      | 58.9M/170M [00:04<00:06, 16.3MB/s] 36%|███▋      | 61.9M/170M [00:04<00:06, 16.5MB/s] 38%|███▊      | 65.0M/170M [00:05<00:06, 16.7MB/s] 40%|███▉      | 68.2M/170M [00:05<00:06, 16.8MB/s] 42%|████▏     | 71.3M/170M [00:05<00:05, 16.9MB/s] 44%|████▎     | 74.4M/170M [00:05<00:05, 16.6MB/s] 45%|████▌     | 77.6M/170M [00:05<00:04, 18.8MB/s] 47%|████▋     | 79.6M/170M [00:05<00:05, 17.9MB/s] 48%|████▊     | 81.4M/170M [00:06<00:05, 16.7MB/s] 49%|████▉     | 83.9M/170M [00:06<00:05, 16.1MB/s] 51%|█████     | 86.9M/170M [00:06<00:04, 18.7MB/s] 52%|█████▏    | 88.8M/170M [00:06<00:04, 17.3MB/s] 53%|█████▎    | 90.6M/170M [00:06<00:05, 15.9MB/s] 55%|█████▍    | 93.2M/170M [00:06<00:04, 17.1MB/s] 56%|█████▌    | 95.1M/170M [00:06<00:04, 17.5MB/s] 57%|█████▋    | 96.9M/170M [00:06<00:04, 15.8MB/s] 58%|█████▊    | 99.5M/170M [00:07<00:04, 17.1MB/s] 59%|█████▉    | 101M/170M [00:07<00:03, 17.7MB/s]  61%|██████    | 103M/170M [00:07<00:04, 16.0MB/s] 62%|██████▏   | 106M/170M [00:07<00:03, 17.7MB/s] 63%|██████▎   | 108M/170M [00:07<00:03, 17.8MB/s] 64%|██████▍   | 109M/170M [00:07<00:03, 15.5MB/s] 66%|██████▌   | 112M/170M [00:07<00:03, 17.8MB/s] 67%|██████▋   | 114M/170M [00:07<00:03, 16.9MB/s] 68%|██████▊   | 116M/170M [00:08<00:03, 15.5MB/s] 69%|██████▉   | 118M/170M [00:08<00:02, 18.2MB/s] 70%|███████   | 120M/170M [00:08<00:02, 17.0MB/s] 71%|███████▏  | 122M/170M [00:08<00:03, 15.7MB/s] 73%|███████▎  | 124M/170M [00:08<00:02, 18.1MB/s] 74%|███████▍  | 126M/170M [00:08<00:02, 17.0MB/s] 75%|███████▌  | 128M/170M [00:08<00:02, 15.7MB/s] 77%|███████▋  | 131M/170M [00:08<00:02, 16.8MB/s] 78%|███████▊  | 133M/170M [00:09<00:02, 17.3MB/s] 79%|███████▉  | 134M/170M [00:09<00:02, 15.9MB/s] 80%|████████  | 137M/170M [00:09<00:01, 17.3MB/s] 81%|████████▏ | 139M/170M [00:09<00:01, 17.4MB/s] 82%|████████▏ | 141M/170M [00:09<00:01, 15.7MB/s] 84%|████████▍ | 143M/170M [00:09<00:01, 17.7MB/s] 85%|████████▌ | 145M/170M [00:09<00:01, 17.7MB/s] 86%|████████▌ | 147M/170M [00:09<00:01, 15.8MB/s] 88%|████████▊ | 150M/170M [00:10<00:01, 17.6MB/s] 89%|████████▉ | 151M/170M [00:10<00:01, 17.7MB/s] 90%|████████▉ | 153M/170M [00:10<00:01, 15.5MB/s] 91%|█████████▏| 156M/170M [00:10<00:00, 18.0MB/s] 92%|█████████▏| 158M/170M [00:10<00:00, 17.9MB/s] 94%|█████████▎| 160M/170M [00:10<00:00, 15.4MB/s] 95%|█████████▌| 162M/170M [00:10<00:00, 17.0MB/s] 96%|█████████▋| 164M/170M [00:10<00:00, 17.5MB/s] 97%|█████████▋| 166M/170M [00:11<00:00, 16.0MB/s] 99%|█████████▊| 168M/170M [00:11<00:00, 17.1MB/s]100%|█████████▉| 170M/170M [00:11<00:00, 17.7MB/s]100%|██████████| 170M/170M [00:11<00:00, 15.1MB/s]
