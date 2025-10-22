@@ -1,6 +1,6 @@
 run:
-  run_id: comparative-1-ResNet-18-11.7-M--CIFAR-10
-  method: comparative-1
+  run_id: proposed-ResNet-18-11.7-M--CIFAR-10
+  method: proposed
   model:
     name: ResNet-18
     num_layers: 18
@@ -36,10 +36,10 @@ run:
     weight_decay: 0.0005
     scheduler: cosine
     batch_size: 256
-    epochs: 1
+    epochs: 200
     num_workers: 8
   algorithm:
-    name: BOIL
+    name: BOIL-UC
     bo_iterations: 50
     random_seeds:
     - 0
@@ -47,15 +47,35 @@ run:
     - 2
     - 3
     - 4
+    beta_uncert: 1.0
+    acquisition: log(EI) - log(mu_c + beta_uncert * sigma_c + 1e-6)
   cost_model:
-    type: LinearRegression
+    type: BayesianRidge
+    alpha_1: 1.0e-06
+    lambda_1: 1.0e-06
   optuna:
-    n_trials: 0
-    search_space: {}
+    n_trials: 30
+    direction: minimize
+    search_space:
+      beta_uncert:
+        type: categorical
+        choices:
+        - 0
+        - 0.5
+        - 1.0
+        - 2.0
+      alpha_1:
+        type: loguniform
+        low: 1.0e-07
+        high: 1.0e-05
+      lambda_1:
+        type: loguniform
+        low: 1.0e-07
+        high: 1.0e-05
 wandb:
   entity: gengaru617-personal
   project: 251021-test
-  mode: disabled
-trial_mode: true
+  mode: online
+trial_mode: false
 results_dir: .research/iteration1
 seed: 42

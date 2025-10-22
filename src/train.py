@@ -321,14 +321,18 @@ def main(cfg: DictConfig) -> None:
         os.environ["WANDB_MODE"] = "disabled"
         wb_run = None
     else:
-        wb_run = wandb.init(
-            entity=cfg.wandb.entity,
-            project=cfg.wandb.project,
-            id=cfg.run.run_id,
-            resume="allow",
-            config=OmegaConf.to_container(cfg, resolve=True),
-            dir=str(results_dir / cfg.run.run_id),
-        )
+        if os.environ.get("WANDB_API_KEY") is None:
+            os.environ["WANDB_MODE"] = "disabled"
+            wb_run = None
+        else:
+            wb_run = wandb.init(
+                entity=cfg.wandb.entity,
+                project=cfg.wandb.project,
+                id=cfg.run.run_id,
+                resume="allow",
+                config=OmegaConf.to_container(cfg, resolve=True),
+                dir=str(results_dir / cfg.run.run_id),
+            )
 
     # ---------------- Dispatch algorithm --------------------------------------
     algo_name = str(cfg.run.algorithm.name).lower()
