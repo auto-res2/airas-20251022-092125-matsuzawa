@@ -1,0 +1,17 @@
+# =============================================================================
+# Root Hydra configuration – all values can be overridden via CLI or run-files
+# =============================================================================
+
+defaults:
+  - run: default  # overridden as run=<run_id>
+
+# ---------------- WandB ----------------
+wandb:
+  entity: gengaru617-personal
+  project: 251021-test
+  mode: online  # auto-overridden to "disabled" in trial mode
+
+# ---------------- Global settings ----------------
+trial_mode: false  # set true via CLI for lightweight validation
+results_dir: ./results
+seed: 42

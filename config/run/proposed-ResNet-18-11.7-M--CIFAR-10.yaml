@@ -1,0 +1,56 @@
+run_id: proposed-ResNet-18-11.7-M--CIFAR-10
+method: proposed
+model:
+  name: ResNet-18
+  num_layers: 18
+  width: 64
+  pretrained: false
+  num_parameters: 11.7M
+dataset:
+  name: CIFAR-10
+  data_dir: ./data/cifar10
+  input_size: 32
+  num_classes: 10
+  augmentation:
+    random_crop:
+      size: 32
+      padding: 4
+    random_horizontal_flip: 0.5
+    normalization:
+      mean: [0.4914, 0.4822, 0.4465]
+      std:  [0.2470, 0.2435, 0.2616]
+  train_val_split: [0.9, 0.1]
+training:
+  optimizer: sgd
+  learning_rate: 0.1
+  momentum: 0.9
+  weight_decay: 5e-4
+  scheduler: cosine
+  batch_size: 256
+  epochs: 200
+  num_workers: 8
+algorithm:
+  name: BOIL-UC
+  bo_iterations: 50
+  random_seeds: [0, 1, 2, 3, 4]
+  beta_uncert: 1.0
+  acquisition: "log(EI) - log(mu_c + beta_uncert * sigma_c + 1e-6)"
+cost_model:
+  type: BayesianRidge
+  alpha_1: 1e-6
+  lambda_1: 1e-6
+optuna:
+  n_trials: 30
+  direction: minimize
+  search_space:
+    beta_uncert:
+      type: categorical
+      choices: [0, 0.5, 1.0, 2.0]
+    alpha_1:
+      type: loguniform
+      low: 1e-7
+      high: 1e-5
+    lambda_1:
+      type: loguniform
+      low: 1e-7
+      high: 1e-5

@@ -1,0 +1,40 @@
+run_id: comparative-1-ResNet-18-11.7-M--CIFAR-10
+method: comparative-1
+model:
+  name: ResNet-18
+  num_layers: 18
+  width: 64
+  pretrained: false
+  num_parameters: 11.7M
+dataset:
+  name: CIFAR-10
+  data_dir: ./data/cifar10
+  input_size: 32
+  num_classes: 10
+  augmentation:
+    random_crop:
+      size: 32
+      padding: 4
+    random_horizontal_flip: 0.5
+    normalization:
+      mean: [0.4914, 0.4822, 0.4465]
+      std:  [0.2470, 0.2435, 0.2616]
+  train_val_split: [0.9, 0.1]
+training:
+  optimizer: sgd
+  learning_rate: 0.1
+  momentum: 0.9
+  weight_decay: 5e-4
+  scheduler: cosine
+  batch_size: 256
+  epochs: 200
+  num_workers: 8
+algorithm:
+  name: BOIL
+  bo_iterations: 50
+  random_seeds: [0, 1, 2, 3, 4]
+cost_model:
+  type: LinearRegression
+optuna:
+  n_trials: 1
+  search_space: {}
