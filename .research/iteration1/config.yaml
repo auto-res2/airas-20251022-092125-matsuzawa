@@ -36,7 +36,7 @@ run:
     weight_decay: 0.0005
     scheduler: cosine
     batch_size: 256
-    epochs: 1
+    epochs: 200
     num_workers: 8
   algorithm:
     name: BOIL
@@ -50,12 +50,12 @@ run:
   cost_model:
     type: LinearRegression
   optuna:
-    n_trials: 0
+    n_trials: 1
     search_space: {}
 wandb:
   entity: gengaru617-personal
   project: 251021-test
-  mode: disabled
-trial_mode: true
+  mode: online
+trial_mode: false
 results_dir: .research/iteration1
 seed: 42

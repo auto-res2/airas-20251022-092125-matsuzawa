@@ -10,3 +10,7 @@ Executing: /home/toma/t-80-8-b-04/_work/airas-20251022-092125-matsuzawa/airas-20
 Executing: /home/toma/t-80-8-b-04/_work/airas-20251022-092125-matsuzawa/airas-20251022-092125-matsuzawa/.venv/bin/python3 -u -m src.train run=comparative-1-ResNet-18-11.7-M--CIFAR-10 results_dir=.research/iteration1 trial_mode=true wandb.mode=disabled run.training.epochs=1 run.optuna.n_trials=0 hydra.run.dir=.research/iteration1/comparative-1-ResNet-18-11.7-M--CIFAR-10/hydra
 === [TRIAL RUN] PASSED for comparative-1-ResNet-18-11.7-M--CIFAR-10 at Wed Oct 22 09:56:28 AM UTC 2025 ===
 
+=== [UV SYNC] Start at Wed Oct 22 09:58:04 AM UTC 2025 ===
+=== [UV SYNC] Finished successfully at Wed Oct 22 09:58:10 AM UTC 2025 ===
+=== [FULL EXPERIMENT] Start for comparative-1-ResNet-18-11.7-M--CIFAR-10 at Wed Oct 22 09:58:10 AM UTC 2025 ===
+Executing: /home/toma/t-80-8-a/_work/airas-20251022-092125-matsuzawa/airas-20251022-092125-matsuzawa/.venv/bin/python3 -u -m src.train run=comparative-1-ResNet-18-11.7-M--CIFAR-10 results_dir=.research/iteration1 hydra.run.dir=.research/iteration1/comparative-1-ResNet-18-11.7-M--CIFAR-10/hydra

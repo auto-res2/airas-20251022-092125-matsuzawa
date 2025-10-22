@@ -317,7 +317,8 @@ def main(cfg: DictConfig) -> None:
     OmegaConf.save(config=cfg, f=str(results_dir / "config.yaml"))
 
     # -------------- WandB initialisation --------------------------------------
-    if cfg.trial_mode or cfg.wandb.mode == "disabled":
+    wandb_api_key = os.environ.get("WANDB_API_KEY")
+    if cfg.trial_mode or cfg.wandb.mode == "disabled" or not wandb_api_key:
         os.environ["WANDB_MODE"] = "disabled"
         wb_run = None
     else:
