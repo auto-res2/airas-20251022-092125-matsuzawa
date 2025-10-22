@@ -2,5 +2,13 @@
   "research_topic": "Improving the efficiency of hyperparameter optimization",
   "queries": [
     "efficient hyperparameter optimization"
+  ],
+  "research_study_list": [
+    {
+      "title": "Bayesian Optimization for Iterative Learning"
+    },
+    {
+      "title": "Hyperparameter Optimization through Neural Network Partitioning"
+    }
   ]
 }
