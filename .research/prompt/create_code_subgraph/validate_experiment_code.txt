@@ -1,0 +1,261 @@
+
+LLM Name: o3-2025-04-16
+Input:
+You are an AI code reviewer validating production-ready experiment code for research papers.
+
+Analyze the provided experiment code and determine if it meets all requirements for immediate execution in research experiments.
+
+# Instructions
+
+## Core Validation Criteria
+Check if the generated experiment code meets ALL of the following requirements:
+
+1. **Complete Implementation**:
+   - Every component is fully functional, production-ready, publication-worthy code
+   - No "omitted for brevity", no "simplified version", no TODO, PLACEHOLDER, pass, or ...
+   - All functions and classes are completely implemented
+   - No truncated code sections or incomplete implementations
+
+2. **Hydra Integration**:
+   - Uses Hydra to manage all experiment configurations from `config/run/*.yaml` files
+   - All parameters are loaded from run configs dynamically
+   - Proper configuration structure with run_id, method, model, dataset, training, and optuna sections
+   - CLI interface matches:
+     * Training: `uv run python -u -m src.main run={run_id} results_dir={path}`
+     * Evaluation: `uv run python -m src.evaluate results_dir={path} run_ids='["run-1", "run-2", ...]'` (independent execution)
+   - Supports trial_mode=true flag for lightweight validation runs (automatically disables WandB)
+
+3. **Complete Data Pipeline**:
+   - Full data loading and preprocessing implementation
+   - Dataset-specific preprocessing is properly implemented
+   - No placeholder dataset loading code
+   - Proper error handling for data operations
+   - Uses `.cache/` as the cache directory for all datasets and models
+
+4. **Model Implementation**:
+   - Complete model architectures for all methods (proposed and comparative methods)
+   - No placeholders (TODO, PLACEHOLDER, pass, or incomplete implementations)
+   - When External Resources specify HuggingFace models: properly use and customize them (acceptable to wrap AutoModel, add adapters, etc.)
+   - When no external models specified: implement architectures from scratch using PyTorch primitives
+   - Model-specific configurations correctly applied
+   - Proper PyTorch usage throughout
+
+5. **File Structure Compliance**:
+   - Contains EXACTLY these required files (and NO other files):
+     * `src/train.py`
+     * `src/evaluate.py`
+     * `src/preprocess.py`
+     * `src/model.py`
+     * `src/main.py`
+     * `pyproject.toml`
+     * `config/config.yaml`
+   - NO additional files (e.g., NO `src/__init__.py`, NO `setup.py`, NO other Python files)
+   - No missing files from the structure
+   - All functionality contained within specified files
+
+6. **WandB Integration**:
+   - train.py initializes WandB and logs ALL metrics comprehensively:
+     * Use `wandb.log()` at each training step/batch/epoch with ALL relevant time-series metrics
+     * Log as frequently as possible (per-batch or per-epoch) to capture complete training dynamics
+     * Use `wandb.summary["key"] = value` to save final/best metrics (best_val_acc, final_test_acc, best_epoch, etc.)
+   - trial_mode automatically disables WandB (sets wandb.mode=disabled)
+   - NO results.json or stdout JSON dumps in train.py
+   - config/config.yaml contains mandatory WandB settings (entity/project)
+
+7. **Configuration Files**:
+   - The generated code properly references config files via Hydra
+   - NOTE: config/run/{run_id}.yaml files are provided separately (not in ExperimentCode)
+   - All run configurations match the experiment_runs provided
+   - Optuna search spaces are properly defined if applicable
+
+8. **Evaluation Script Independence**:
+   - evaluate.py is executed independently via `uv run python -m src.evaluate results_dir={path} run_ids='["run-1", "run-2"]'`
+   - Accepts `run_ids` parameter as JSON string list (parse with `json.loads(args.run_ids)`)
+   - main.py DOES NOT call evaluate.py
+   - evaluate.py retrieves comprehensive data from WandB API:
+     * Use `wandb.Api()` to get run data: `run = api.run(f"{entity}/{project}/{run_id}")`
+     * Retrieve: `history = run.history()`, `summary = run.summary._json_dict`, `config = dict(run.config)`
+   - **STEP 1: Per-Run Processing** (for each run_id):
+     * Export comprehensive run-specific metrics to: `{results_dir}/{run_id}/metrics.json`
+     * Generate run-specific figures (learning curves, confusion matrices) to: `{results_dir}/{run_id}/`
+     * Each run should have its own subdirectory with its metrics and figures
+   - **STEP 2: Aggregated Analysis** (after processing all runs):
+     * Export aggregated metrics to: `{results_dir}/comparison/aggregated_metrics.json`
+     * Compute secondary/derived metrics (e.g., improvement rate: (proposed - baseline) / baseline)
+     * Generate comparison figures to: `{results_dir}/comparison/`
+     * Cross-run comparison charts (bar charts, box plots)
+     * Performance metrics tables
+     * Statistical significance tests
+   - Proper figure quality: legends, annotations, tight_layout
+   - Follows GLOBALLY UNIQUE naming convention to prevent collisions:
+     * Per-run figures: `{run_id}_{figure_topic}[_<condition>][_pairN].pdf` (e.g., `run-1-proposed-bert-glue_learning_curve.pdf`)
+     * Comparison figures: `comparison_{figure_topic}[_<condition>][_pairN].pdf` (e.g., `comparison_accuracy_bar_chart.pdf`)
+   - train.py and main.py generate NO figures
+   - evaluate.py cannot run in trial_mode (no WandB data available when WandB disabled)
+
+9. **Trial Mode Implementation**:
+   - trial_mode=true flag properly reduces computational load
+   - Training: epochs=1, batches limited to 1-2, Optuna disabled (n_trials=0), small evaluation subset
+   - WandB automatically disabled in trial_mode (wandb.mode=disabled)
+   - Purpose: Fast validation that code runs without errors
+
+## Output Format
+Respond with a JSON object containing:
+- `is_code_ready`: boolean - true if ALL criteria are met, false otherwise
+- `code_issue`: string - specific issues found if any criteria are not met, focusing on what needs to be fixed
+
+# Current Research Method
+{
+    "Open Problems": "In BOIL the trade-off between expected utility (EI) and training cost uses a plain LinearRegression model that outputs only the cost mean.  • Learning curves in practice exhibit highly non-linear, heteroscedastic cost patterns (e.g. GPU time depends on batch-size, network width, data-set size, etc.).  • Ignoring cost uncertainty can mis-rank candidate points and waste optimisation budget.  A minimal change that adds uncertainty estimates to the cost model can address this limitation without touching BOIL’s learning-curve GP or augmentation machinery.",
+    "Methods": "We keep BOIL intact but replace its cost proxy with a BayesianRidge regressor and modify the acquisition so that the denominator is the optimistic cost mean augmented by a multiple of its predictive standard deviation.  Concretely:  1. Fit sklearn.linear_model.BayesianRidge on concatenated (x,t) → observed_cost.  2. At a candidate z=[x,t] obtain posterior mean μ_c and std σ_c.  3. New cost-aware acquisition:  A(z)=log(EI(z))−log( μ_c + β·σ_c + ε )  (ε=1e−6).  Setting β∈[0,2] interpolates between risk-neutral (β=0, original BOIL) and risk-averse (β>0).  Motivation: penalise points whose cost is both high and uncertain, leading to more reliable wall-clock savings while changing only 5 lines of code.",
+    "Experimental Setup": "Data sets: CIFAR-10 CNN (same as BOIL repo) and CartPole-v0 DQN.  Budget: 50 BO iterations, 5 random seeds.  Methods compared: (i) Original BOIL, (ii) BOIL-UC (β=1).  Metrics:  • Wall-clock minutes until the incumbent reaches 90% of best-known test accuracy / return.  • Area-under-curve of best-so-far metric vs time.  Hardware and other hyper-parameters identical to BOIL paper to ensure fair comparison.",
+    "Experimental Code": "# --- only the changed parts ---\nfrom sklearn.linear_model import BayesianRidge\n\nclass BOIL_UC(BOIL):\n    def __init__(self,*args, beta_uncert=1.0, **kwargs):\n        super().__init__(*args, **kwargs)\n        self.beta_uncert = beta_uncert\n        # replace linear cost model\n        self.cost_model = BayesianRidge()\n\n    # override utility-cost computation\n    def utility_cost_evaluation(self, z, acq_func, isDebug=False):\n        def _single(z):\n            util = acq_func.acq_kind(z, gp=self.gp)               # EI part (unchanged)\n            mu_c, std_c = self.cost_model.predict(z.reshape(1,-1), return_std=True)\n            adj_cost = max(0.0, mu_c) + self.beta_uncert*std_c + 1e-6\n            return np.log(util) - np.log(adj_cost)\n        if z.ndim==1:\n            return -_single(z)\n        return -np.asarray([_single(p) for p in z])\n\n    # call after every true evaluation\n    def update_cost_model(self):\n        Z = np.hstack((self.X, self.T))\n        self.cost_model.fit(Z, self.Y_cost)\n\n    # ensure model update before acquisition optimisation\n    def suggest_nextpoint(self):\n        self.update_cost_model()\n        return super().suggest_nextpoint()\n",
+    "Expected Result": "Across both benchmarks BOIL-UC should reach the target performance about 10-20 % faster in wall-clock time.  The AUC metric is expected to be higher (lower is better) for BOIL-UC in ≥4 of 5 seeds, indicating more consistent cost-aware choices.  When β is set to 0 we exactly reproduce original BOIL numbers, confirming minimal overhead.",
+    "Expected Conclusion": "Adding a Bayesian cost model with uncertainty weighting is a tiny change (replace LinearRegression, adjust 5 code lines) yet yields tangible speed-ups and stabler optimisation.  The improvement arises because the acquisition now avoids hyper-parameters whose training cost is both high and uncertain, focusing exploration on cheaper, safer regions.  This demonstrates that even in sophisticated BO frameworks, incorporating predictive uncertainty on auxiliary objectives can provide outsized practical gains with negligible implementation effort."
+}
+
+# Experimental Design
+- Strategy: We compare the original BOIL (Bayesian Optimisation for Learning-curves) against BOIL-UC, our drop-in replacement that equips BOIL with a BayesianRidge cost model and an uncertainty-aware acquisition denominator.  Both algorithms optimise hyper-parameters for training a fixed ResNet-18 on CIFAR-10.  In each BO iteration the candidate (network width, batch-size, learning-rate, etc.) is selected, its single training run is launched, resulting learning-curve observations update BOIL’s GP (utility) and the BayesianRidge (cost).  The acquisition used by BOIL-UC is A(z)=log(EI(z))−log(μ_c+β·σ_c+1e-6).  Experiments run for 50 BO iterations under five random seeds on one A100 GPU.  Wall-clock time until the best validation accuracy reaches 90 % of the global optimum and the time-AUC of best-so-far accuracy are recorded.  The whole workflow is automated via the existing BOIL code-base; only ~15 lines are added to swap the cost model, compute μ_c,σ_c and update β.  Hyper-parameter β is tuned by grid search and the best value is used for the final comparison.
+- Proposed Method: BOIL-UC (Bayesian Optimistic Cost).  Objective: accelerate wall-clock convergence of Bayesian hyper-parameter optimisation by accounting for both mean and uncertainty of training cost.
+Components:
+1. Utility model (unchanged): Gaussian Process on learning-curve features to yield Expected Improvement EI(z).
+2. Cost model (new): sklearn.linear_model.BayesianRidge trained on concatenated design-time features (x,t) → observed GPU minutes.  Gives posterior mean μ_c and std σ_c.
+3. Acquisition: A(z)=log(EI(z))−log(μ_c+βσ_c+ε) where ε=1e-6.  β∈[0,2] trades risk-neutral for risk-averse behaviour.
+4. Algorithmic steps per BO iteration:
+   a. Fit/update GP and BayesianRidge with all past data.
+   b. Optimise A(z) with multistart L-BFGS to choose next configuration.
+   c. Train the candidate model until time t, record validation accuracy, training cost.
+   d. Append observations and repeat.
+Theoretically, incorporating σ_c makes A(z) proportional to an upper-confidence bound on 1/cost, reducing probability of selecting expensive or uncertain runs.  Implementation requires replacing LinearRegression with BayesianRidge, calling predict(...,return_std=True) and adding βσ_c in the denominator.
+- Evaluation Metrics: ['Time-to-Target (minutes)', 'AUC_BestSoFar']
+
+# Experiment Runs
+
+- Run ID: proposed-ResNet-18-11.7-M--CIFAR-10
+  Method: proposed
+  Model: ResNet-18 (11.7 M)
+  Dataset: CIFAR-10
+  
+  Config Content:
+  ```yaml
+  run_id: proposed-ResNet-18-11.7-M--CIFAR-10
+method: proposed
+model:
+  name: ResNet-18
+  num_layers: 18
+  width: 64
+  pretrained: false
+  num_parameters: 11.7M
+dataset:
+  name: CIFAR-10
+  data_dir: ./data/cifar10
+  input_size: 32
+  num_classes: 10
+  augmentation:
+    random_crop:
+      size: 32
+      padding: 4
+    random_horizontal_flip: 0.5
+    normalization:
+      mean: [0.4914, 0.4822, 0.4465]
+      std:  [0.2470, 0.2435, 0.2616]
+  train_val_split: [0.9, 0.1]
+training:
+  optimizer: sgd
+  learning_rate: 0.1
+  momentum: 0.9
+  weight_decay: 5e-4
+  scheduler: cosine
+  batch_size: 256
+  epochs: 200
+  num_workers: 8
+algorithm:
+  name: BOIL-UC
+  bo_iterations: 50
+  random_seeds: [0, 1, 2, 3, 4]
+  beta_uncert: 1.0
+  acquisition: "log(EI) - log(mu_c + beta_uncert * sigma_c + 1e-6)"
+cost_model:
+  type: BayesianRidge
+  alpha_1: 1e-6
+  lambda_1: 1e-6
+optuna:
+  n_trials: 30
+  direction: minimize
+  search_space:
+    beta_uncert:
+      type: categorical
+      choices: [0, 0.5, 1.0, 2.0]
+    alpha_1:
+      type: loguniform
+      low: 1e-7
+      high: 1e-5
+    lambda_1:
+      type: loguniform
+      low: 1e-7
+      high: 1e-5
+
+  ```
+  
+
+- Run ID: comparative-1-ResNet-18-11.7-M--CIFAR-10
+  Method: comparative-1
+  Model: ResNet-18 (11.7 M)
+  Dataset: CIFAR-10
+  
+  Config Content:
+  ```yaml
+  run_id: comparative-1-ResNet-18-11.7-M--CIFAR-10
+method: comparative-1
+model:
+  name: ResNet-18
+  num_layers: 18
+  width: 64
+  pretrained: false
+  num_parameters: 11.7M
+dataset:
+  name: CIFAR-10
+  data_dir: ./data/cifar10
+  input_size: 32
+  num_classes: 10
+  augmentation:
+    random_crop:
+      size: 32
+      padding: 4
+    random_horizontal_flip: 0.5
+    normalization:
+      mean: [0.4914, 0.4822, 0.4465]
+      std:  [0.2470, 0.2435, 0.2616]
+  train_val_split: [0.9, 0.1]
+training:
+  optimizer: sgd
+  learning_rate: 0.1
+  momentum: 0.9
+  weight_decay: 5e-4
+  scheduler: cosine
+  batch_size: 256
+  epochs: 200
+  num_workers: 8
+algorithm:
+  name: BOIL
+  bo_iterations: 50
+  random_seeds: [0, 1, 2, 3, 4]
+cost_model:
+  type: LinearRegression
+optuna:
+  n_trials: 1
+  search_space: {}
+
+  ```
+  
+
+
+# Generated Experiment Code (To be validated)
+{"config_yaml": "wandb:\n  entity: gengaru617-personal\n  project: 251021-test\n  mode: online\n\n# Trial mode flag; can be overridden from CLI\ntrial_mode: false\n\n# Default results directory (override from CLI)\nresults_dir: ./results\n\nseed: 42\n", "evaluate_py": "import argparse\nimport json\nfrom pathlib import Path\nfrom typing import List, Dict, Any\n\nimport matplotlib.pyplot as plt\nimport seaborn as sns\nimport pandas as pd\nimport numpy as np\nimport wandb\nfrom omegaconf import OmegaConf\n\n\ndef save_json(obj: Any, path: Path):\n    path.parent.mkdir(parents=True, exist_ok=True)\n    with open(path, \"w\") as fp:\n        json.dump(obj, fp, indent=2)\n\n\ndef generate_learning_curve(history_df: pd.DataFrame, run_id: str, out_dir: Path):\n    plt.figure(figsize=(8, 5))\n    if \"epoch\" in history_df.columns:\n        x = history_df[\"epoch\"].values\n    else:\n        x = np.arange(len(history_df))\n    if \"val_acc\" in history_df.columns:\n        plt.plot(x, history_df[\"val_acc\"], label=\"Val Acc\")\n    if \"train_acc\" in history_df.columns:\n        plt.plot(x, history_df[\"train_acc\"], label=\"Train Acc\")\n    plt.xlabel(\"Epoch\")\n    plt.ylabel(\"Accuracy\")\n    plt.title(f\"Learning Curve \u2013 {run_id}\")\n    plt.legend()\n    plt.tight_layout()\n    fig_path = out_dir / f\"{run_id}_learning_curve.pdf\"\n    plt.savefig(fig_path)\n    plt.close()\n    return fig_path\n\n\ndef generate_confusion_matrix(cm: List[List[int]], run_id: str, out_dir: Path):\n    plt.figure(figsize=(6, 5))\n    sns.heatmap(np.array(cm), annot=True, fmt=\"d\", cmap=\"Blues\")\n    plt.title(f\"Confusion Matrix \u2013 {run_id}\")\n    plt.xlabel(\"Predicted\")\n    plt.ylabel(\"True\")\n    plt.tight_layout()\n    fig_path = out_dir / f\"{run_id}_confusion_matrix.pdf\"\n    plt.savefig(fig_path)\n    plt.close()\n    return fig_path\n\n\ndef main():\n    parser = argparse.ArgumentParser()\n    parser.add_argument(\"results_dir\", type=str, help=\"Directory containing experiment configs\")\n    parser.add_argument(\"run_ids\", type=str, help=\u0027JSON list of run IDs, e.g. \"[\\\"run-1\\\", \\\"run-2\\\"]\"\u0027)\n    args = parser.parse_args()\n\n    results_dir = Path(args.results_dir)\n    run_ids: List[str] = json.loads(args.run_ids)\n\n    # ------------------------------------------------------------------\n    # Load WandB project/entity from stored config\n    # ------------------------------------------------------------------\n    cfg_path = results_dir / \"config.yaml\"\n    if not cfg_path.exists():\n        raise FileNotFoundError(f\"Cannot find config.yaml at {cfg_path}\")\n    cfg = OmegaConf.load(cfg_path)\n\n    entity = cfg.wandb.entity\n    project = cfg.wandb.project\n\n    api = wandb.Api()\n\n    aggregated_metrics: Dict[str, Dict[str, Any]] = {}\n    generated_files: List[Path] = []\n\n    for rid in run_ids:\n        run = api.run(f\"{entity}/{project}/{rid}\")\n        history = run.history(keys=None)  # all metrics\n        summary = run.summary._json_dict\n        config = dict(run.config)\n\n        run_out_dir = results_dir / rid\n        run_out_dir.mkdir(parents=True, exist_ok=True)\n\n        # --- Save metrics ---\n        history_path = run_out_dir / \"metrics.json\"\n        save_json(history.to_dict(orient=\"list\"), history_path)\n        generated_files.append(history_path)\n\n        # --- Figures ---\n        lc_path = generate_learning_curve(history, rid, run_out_dir)\n        generated_files.append(lc_path)\n\n        if \"confusion_matrix\" in summary and summary[\"confusion_matrix\"] is not None:\n            cm_path = generate_confusion_matrix(summary[\"confusion_matrix\"], rid, run_out_dir)\n            generated_files.append(cm_path)\n\n        aggregated_metrics[rid] = {\n            \"best_val_acc\": summary.get(\"best_val_acc\"),\n            \"training_time\": summary.get(\"training_time\"),\n            \"method\": config.get(\"method\"),\n        }\n\n    # ------------------------------------------------------------------\n    # Aggregated comparison\n    # ------------------------------------------------------------------\n    comp_dir = results_dir / \"comparison\"\n    comp_dir.mkdir(exist_ok=True)\n\n    aggregated_path = comp_dir / \"aggregated_metrics.json\"\n    save_json(aggregated_metrics, aggregated_path)\n    generated_files.append(aggregated_path)\n\n    # --- Bar chart of accuracy ---\n    df = pd.DataFrame.from_dict(aggregated_metrics, orient=\"index\")\n    plt.figure(figsize=(8, 4))\n    sns.barplot(x=df.index, y=\"best_val_acc\", data=df)\n    plt.ylabel(\"Best Val Accuracy\")\n    plt.title(\"Final Accuracy Across Runs\")\n    plt.xticks(rotation=45, ha=\"right\")\n    plt.tight_layout()\n    bar_path = comp_dir / \"comparison_accuracy_bar_chart.pdf\"\n    plt.savefig(bar_path)\n    plt.close()\n    generated_files.append(bar_path)\n\n    # --- Print paths ---\n    for p in generated_files:\n        print(p)\n\n\nif __name__ == \"__main__\":\n    main()\n", "main_py": "import subprocess\nimport os\nfrom pathlib import Path\nfrom typing import List\n\nfrom omegaconf import DictConfig, OmegaConf\nimport hydra\n\n\n@hydra.main(config_path=\"../config\", config_name=\"config\")\ndef main(cfg: DictConfig):\n    # ------------------------------------------------------------------\n    # Prepare results directory and save merged config there\n    # ------------------------------------------------------------------\n    results_dir = Path(cfg.results_dir)\n    results_dir.mkdir(parents=True, exist_ok=True)\n    cfg_path = results_dir / \"config.yaml\"\n    OmegaConf.save(config=cfg, f=str(cfg_path))\n\n    # ------------------------------------------------------------------\n    # Build CLI overrides for the subprocess call\n    # ------------------------------------------------------------------\n    overrides: List[str] = [f\"run={cfg.run.run_id}\", f\"results_dir={cfg.results_dir}\"]\n\n    if cfg.get(\"trial_mode\", False):\n        # ensure WandB disabled \u0026 epochs reduced \u0026 no trials\n        overrides.append(\"trial_mode=true\")\n        overrides.append(\"wandb.mode=disabled\")\n        overrides.append(\"training.epochs=1\")\n        overrides.append(\"optuna.n_trials=0\")\n\n    # ensure Hydra output dir does not pollute; we let sub-Hydra create inside the run dir\n    overrides.append(f\"hydra.run.dir={cfg.results_dir}/{cfg.run.run_id}/hydra\")\n\n    cmd = [sys.executable, \"-u\", \"-m\", \"src.train\"] + overrides\n    print(\"Executing:\", \" \".join(cmd))\n    subprocess.run(cmd, check=True)\n\n\nif __name__ == \"__main__\":\n    main()\n", "model_py": "from typing import Dict\n\nimport torch.nn as nn\nfrom torchvision import models\nfrom omegaconf import DictConfig\n\n\ndef build_model(cfg: DictConfig) -\u003e nn.Module:\n    name = cfg.model.name.lower()\n    num_classes = cfg.dataset.num_classes\n    pretrained = bool(cfg.model.pretrained)\n\n    if name in (\"resnet-18\", \"resnet18\"):\n        model = models.resnet18(weights=models.ResNet18_Weights.DEFAULT if pretrained else None)\n        model.fc = nn.Linear(model.fc.in_features, num_classes)\n    else:\n        raise ValueError(f\"Unsupported model architecture: {cfg.model.name}\")\n    return model\n", "preprocess_py": "from pathlib import Path\nfrom typing import Tuple\n\nimport torch\nfrom torch.utils.data import DataLoader, random_split\nfrom torchvision import datasets, transforms\nfrom omegaconf import DictConfig\n\n\nCACHE_DIR = Path(\".cache\")\n\n\ndef _build_transforms(aug_cfg: DictConfig, is_train: bool):\n    t_list = []\n    if is_train:\n        if \"random_crop\" in aug_cfg:\n            rc = aug_cfg.random_crop\n            t_list.append(transforms.RandomCrop(rc.size, padding=rc.padding))\n        if \"random_horizontal_flip\" in aug_cfg:\n            prob = aug_cfg.random_horizontal_flip\n            t_list.append(transforms.RandomHorizontalFlip(prob))\n    t_list.append(transforms.ToTensor())\n    if \"normalization\" in aug_cfg:\n        mean = aug_cfg.normalization.mean\n        std = aug_cfg.normalization.std\n        t_list.append(transforms.Normalize(mean=mean, std=std))\n    return transforms.Compose(t_list)\n\n\ndef get_dataloaders(cfg: DictConfig) -\u003e Tuple[DataLoader, DataLoader, DataLoader]:\n    \"\"\"Returns train, validation, test DataLoaders according to cfg.dataset specs.\"\"\"\n\n    data_root = Path(cfg.dataset.data_dir) if \"data_dir\" in cfg.dataset else CACHE_DIR / \"datasets\"\n    data_root.mkdir(parents=True, exist_ok=True)\n\n    train_transform = _build_transforms(cfg.dataset.augmentation, is_train=True)\n    test_transform = _build_transforms(cfg.dataset.augmentation, is_train=False)\n\n    if cfg.dataset.name.lower() == \"cifar-10\" or cfg.dataset.name.lower() == \"cifar10\":\n        train_full = datasets.CIFAR10(root=data_root, train=True, download=True, transform=train_transform)\n        test_set = datasets.CIFAR10(root=data_root, train=False, download=True, transform=test_transform)\n    else:\n        raise ValueError(f\"Unsupported dataset {cfg.dataset.name}\")\n\n    # Train/val split\n    total_train = len(train_full)\n    train_ratio, val_ratio = cfg.dataset.train_val_split\n    train_len = int(total_train * train_ratio)\n    val_len = total_train - train_len\n    train_set, val_set = random_split(train_full, [train_len, val_len])\n\n    train_loader = DataLoader(\n        train_set,\n        batch_size=cfg.training.batch_size,\n        shuffle=True,\n        num_workers=cfg.training.num_workers,\n        pin_memory=True,\n    )\n    val_loader = DataLoader(\n        val_set,\n        batch_size=cfg.training.batch_size,\n        shuffle=False,\n        num_workers=cfg.training.num_workers,\n        pin_memory=True,\n    )\n    test_loader = DataLoader(\n        test_set,\n        batch_size=cfg.training.batch_size,\n        shuffle=False,\n        num_workers=cfg.training.num_workers,\n        pin_memory=True,\n    )\n\n    return train_loader, val_loader, test_loader\n", "pyproject_toml": "[project]\nname = \"boil-uc-experiments\"\nversion = \"0.1.0\"\ndescription = \"Experiments for BOIL and BOIL-UC on CIFAR-10 using Hydra configuration\"\n\n[project.dependencies]\ntorch = \"^2.0\"\ntorchvision = \"^0.15\"\nhydra-core = \"^1.3.2\"\nwandb = \"^0.15\"\noptuna = \"^3.5\"\nnumpy = \"^1.23\"\npandas = \"^2.0\"\nscikit-learn = \"^1.2\"\nmatplotlib = \"^3.7\"\nseaborn = \"^0.12\"\nomegaconf = \"^2.3\"\ntransformers = \"^4.32\"\ndatasets = \"^2.11\"\ntqdm = \"^4.65\"\n\n[build-system]\nrequires = [\"setuptools\", \"wheel\"]\n", "train_py": "import os\nimport sys\nimport time\nimport json\nfrom pathlib import Path\nfrom typing import Dict, Any, List\n\nimport numpy as np\nimport torch\nimport torch.nn as nn\nfrom torch.utils.data import DataLoader\nfrom omegaconf import DictConfig, OmegaConf\nimport hydra\nimport wandb\nimport optuna\nfrom tqdm import tqdm\nfrom sklearn.metrics import accuracy_score, confusion_matrix\n\nfrom .preprocess import get_dataloaders\nfrom .model import build_model\n\n# --------------------------------------------------------------------------------------\n# Helper utilities\n# --------------------------------------------------------------------------------------\n\ndef seed_everything(seed: int = 42):\n    import random\n    random.seed(seed)\n    np.random.seed(seed)\n    torch.manual_seed(seed)\n    torch.cuda.manual_seed_all(seed)\n    torch.backends.cudnn.deterministic = True\n    torch.backends.cudnn.benchmark = False\n\n\ndef _log_step(wandb_run, payload: Dict[str, Any], step: int):\n    if wandb_run is not None:\n        wandb_run.log(payload, step=step)\n\n\n# --------------------------------------------------------------------------------------\n# Core training / evaluation logic\n# --------------------------------------------------------------------------------------\n\ndef evaluate(model: nn.Module, dataloader: DataLoader, device: torch.device):\n    model.eval()\n    criterion = nn.CrossEntropyLoss()\n    losses: List[float] = []\n    all_preds: List[int] = []\n    all_labels: List[int] = []\n\n    with torch.no_grad():\n        for images, labels in dataloader:\n            images, labels = images.to(device), labels.to(device)\n            logits = model(images)\n            loss = criterion(logits, labels)\n            losses.append(loss.item())\n            preds = torch.argmax(logits, dim=1)\n            all_preds.extend(preds.cpu().numpy())\n            all_labels.extend(labels.cpu().numpy())\n\n    avg_loss = float(np.mean(losses))\n    acc = float(accuracy_score(all_labels, all_preds))\n    cm = confusion_matrix(all_labels, all_preds).tolist()\n    return avg_loss, acc, cm, all_preds, all_labels\n\n\ndef run_single_training(cfg: DictConfig, trial: optuna.Trial = None):\n    \"\"\"Runs a single training loop. If `trial` is provided the hyper-parameters specified in\n    cfg.optuna.search_space will be overridden by the values sampled from Optuna.\n    Returns\n    -------\n    Dict[str, Any]\n        Dictionary with keys: best_val_acc, final_val_acc, training_time, confusion_matrix\n    \"\"\"\n    # ------------------------------------------------------------------\n    # Apply Optuna overrides\n    # ------------------------------------------------------------------\n    if trial is not None:\n        for hp_name, hp_conf in cfg.optuna.search_space.items():\n            if hp_conf[\"type\"] == \"categorical\":\n                sampled = trial.suggest_categorical(hp_name, hp_conf[\"choices\"])\n            elif hp_conf[\"type\"] == \"loguniform\":\n                sampled = trial.suggest_float(hp_name, hp_conf[\"low\"], hp_conf[\"high\"], log=True)\n            elif hp_conf[\"type\"] == \"uniform\":\n                sampled = trial.suggest_float(hp_name, hp_conf[\"low\"], hp_conf[\"high\"], log=False)\n            else:\n                raise ValueError(f\"Unknown hyper-parameter type {hp_conf[\u0027type\u0027]}\")\n            # write back into cfg\n            OmegaConf.set_struct(cfg, False)\n            OmegaConf.update(cfg, hp_name, sampled)\n            OmegaConf.set_struct(cfg, True)\n\n    # ------------------------------------------------------------------\n    # Re-seeding \u0026 device\n    # ------------------------------------------------------------------\n    seed_everything(cfg.get(\"seed\", 42))\n    device = torch.device(\"cuda\" if torch.cuda.is_available() else \"cpu\")\n\n    # ------------------------------------------------------------------\n    # Data\n    # ------------------------------------------------------------------\n    train_loader, val_loader, _ = get_dataloaders(cfg)\n\n    # ------------------------------------------------------------------\n    # Model, optim, scheduler\n    # ------------------------------------------------------------------\n    model = build_model(cfg)\n    model.to(device)\n\n    if cfg.training.optimizer == \"sgd\":\n        optimizer = torch.optim.SGD(\n            model.parameters(),\n            lr=cfg.training.learning_rate,\n            momentum=cfg.training.momentum,\n            weight_decay=cfg.training.weight_decay,\n        )\n    elif cfg.training.optimizer == \"adam\":\n        optimizer = torch.optim.Adam(\n            model.parameters(), lr=cfg.training.learning_rate, weight_decay=cfg.training.weight_decay\n        )\n    else:\n        raise ValueError(\"Unsupported optimizer\")\n\n    if cfg.training.scheduler == \"cosine\":\n        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=cfg.training.epochs)\n    else:\n        scheduler = None\n\n    criterion = nn.CrossEntropyLoss()\n\n    # ------------------------------------------------------------------\n    # Train loop\n    # ------------------------------------------------------------------\n    best_val_acc: float = 0.0\n    best_epoch: int = -1\n    start_time = time.time()\n\n    for epoch in range(cfg.training.epochs):\n        model.train()\n        running_loss: float = 0.0\n        running_correct: int = 0\n        running_total: int = 0\n\n        # Optionally limit number of batches for trial mode\n        for batch_idx, (images, labels) in enumerate(train_loader):\n            images, labels = images.to(device), labels.to(device)\n            optimizer.zero_grad()\n            logits = model(images)\n            loss = criterion(logits, labels)\n            loss.backward()\n            optimizer.step()\n\n            running_loss += loss.item() * images.size(0)\n            preds = torch.argmax(logits, dim=1)\n            running_correct += (preds == labels).sum().item()\n            running_total += labels.size(0)\n\n            # log per-batch if desired\n            _log_step(wandb.run if wandb.run else None,\n                      {\n                          \"batch_train_loss\": loss.item(),\n                          \"lr\": optimizer.param_groups[0][\"lr\"],\n                      },\n                      step=epoch * len(train_loader) + batch_idx)\n\n            # trial-mode: process only 2 batches for speed\n            if cfg.trial_mode and batch_idx \u003e= 1:\n                break\n\n        train_loss_epoch = running_loss / running_total\n        train_acc_epoch = running_correct / running_total\n\n        # --------------------------------------------------------------\n        # Validation\n        # --------------------------------------------------------------\n        val_loss, val_acc, cm, preds, labels_vec = evaluate(model, val_loader, device)\n\n        if val_acc \u003e best_val_acc:\n            best_val_acc = val_acc\n            best_epoch = epoch\n            best_cm = cm\n            # Save best checkpoint inside the job\u0027s working directory (Hydra already changed cwd)\n            torch.save({\n                \"model_state_dict\": model.state_dict(),\n                \"epoch\": epoch,\n                \"val_acc\": val_acc,\n                \"cm\": cm,\n            }, \"best_checkpoint.pt\")\n\n        # scheduler step\n        if scheduler is not None:\n            scheduler.step()\n\n        # --------------------------------------------------------------\n        # Logging\n        # --------------------------------------------------------------\n        _log_step(\n            wandb.run if wandb.run else None,\n            {\n                \"epoch\": epoch,\n                \"train_loss\": train_loss_epoch,\n                \"train_acc\": train_acc_epoch,\n                \"val_loss\": val_loss,\n                \"val_acc\": val_acc,\n            },\n            step=epoch,\n        )\n\n        if cfg.trial_mode:\n            # stop after first epoch in trial_mode\n            break\n\n    training_time = time.time() - start_time\n\n    # --------------------------------------------------------------\n    # Final / summary logging\n    # --------------------------------------------------------------\n    if wandb.run is not None:\n        wandb.run.summary[\"best_val_acc\"] = best_val_acc\n        wandb.run.summary[\"best_epoch\"] = best_epoch\n        wandb.run.summary[\"training_time\"] = training_time\n        wandb.run.summary[\"confusion_matrix\"] = best_cm\n\n    # Return metrics Optuna cares about\n    return {\n        \"loss\": -best_val_acc,  # Optuna minimises, so negate accuracy\n        \"best_val_acc\": best_val_acc,\n        \"final_val_acc\": val_acc,\n        \"training_time\": training_time,\n        \"confusion_matrix\": best_cm,\n    }\n\n\n# --------------------------------------------------------------------------------------\n# Train entry-point (Hydra managed)\n# --------------------------------------------------------------------------------------\n\n@hydra.main(config_path=\"../config\", config_name=\"config\")\ndef main(cfg: DictConfig):\n    # ----------------------------------------------------------------------------------\n    # Initialise Weights \u0026 Biases (skip if disabled)\n    # ----------------------------------------------------------------------------------\n    os.environ[\"WANDB_CACHE_DIR\"] = str(Path(\".cache\") / \"wandb\")\n\n    if cfg.wandb.mode == \"disabled\":\n        os.environ[\"WANDB_MODE\"] = \"disabled\"\n        wandb_run = None\n    else:\n        wandb_run = wandb.init(\n            entity=cfg.wandb.entity,\n            project=cfg.wandb.project,\n            id=cfg.run.run_id,\n            config=OmegaConf.to_container(cfg, resolve=True),\n            resume=\"allow\",\n            dir=str(Path(cfg.results_dir) / cfg.run.run_id),\n        )\n\n    # ----------------------------------------------------------------------------------\n    # Optuna hyper-parameter optimisation\n    # ----------------------------------------------------------------------------------\n    study = None\n    if cfg.optuna.n_trials \u003e 0:\n        direction = cfg.optuna.direction if \"direction\" in cfg.optuna else \"minimize\"\n        study = optuna.create_study(direction=direction)\n\n        def _objective(trial):\n            res = run_single_training(cfg, trial)\n            return res[\"loss\"]\n\n        study.optimize(_objective, n_trials=cfg.optuna.n_trials)\n        best_trial = study.best_trial\n        if wandb_run is not None:\n            wandb_run.summary[\"optuna_best_val_acc\"] = -best_trial.value\n            for k, v in best_trial.params.items():\n                wandb_run.summary[f\"best_hp/{k}\"] = v\n    else:\n        # single run without optimisation\n        run_single_training(cfg)\n\n    if wandb_run is not None:\n        print(f\"WandB URL: {wandb_run.url}\")\n        wandb_run.finish()\n\n\nif __name__ == \"__main__\":\n    main()\n"}
+
+Analyze the experiment code thoroughly. Ensure it is complete, executable, and ready for publication-quality research experiments.
+Output:
+{
+    "is_code_ready": false,
+    "code_issue": "The submission violates multiple core criteria:\n\n1. File-structure mismatch: files are emitted as evaluate_py, main_py … instead of the REQUIRED paths (src/train.py, …, config/config.yaml).  Running `python -m src.train` will fail because the directory has no __init__.py (forbidden) and therefore cannot be imported as a package.\n\n2. Incomplete implementation of the research method: no BOIL / BOIL-UC logic, no cost model, no Optuna-powered acquisition – train.py only performs plain supervised training.\n\n3. evaluate.py lacks STEP-2 analysis requirements (no derived metrics, no statistical tests, no comparison figures except one bar chart).\n\n4. Hydra / CLI defects:\n   • main.py uses sys.executable but never imports sys (NameError).\n   • Default config.yaml is missing the mandatory run section (run_id, method, model …); train.py and main.py access cfg.run.* and will crash unless every call supplies a run override.\n\n5. Trial-mode/WandB coupling only happens in src/main; running src.train directly with trial_mode=true still creates a WandB run.\n\n6. WandB logging is per-batch but training loop breaks early in trial mode; however there is no logging of per-epoch learning-rate, val metrics, etc. for *all* epochs as required.\n\n7. Cached directories for datasets and WandB are not placed under .cache/ uniformly (dataset path default is ./data when data_dir missing).\n\nBecause of these issues the code is not immediately executable nor publication-ready."
+}
