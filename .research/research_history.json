@@ -67,6 +67,159 @@
         "beta_uncert": "0,0.5,1,2",
         "bayesianridge_alpha_1": "1e-7-1e-5",
         "bayesianridge_lambda_1": "1e-7-1e-5"
+      },
+      "external_resources": {
+        "hugging_face": {
+          "models": [
+            {
+              "id": "microsoft/resnet-18",
+              "author": "microsoft",
+              "sha": "65a5785d9156231087c481e0c7dd33a5ff6f7e3e",
+              "created_at": "2022-03-16T15:40:26+00:00",
+              "last_modified": "2024-04-08T11:06:50+00:00",
+              "private": false,
+              "gated": false,
+              "disabled": false,
+              "downloads": 127325,
+              "likes": 59,
+              "siblings": [
+                {
+                  "rfilename": ".gitattributes"
+                },
+                {
+                  "rfilename": "README.md"
+                },
+                {
+                  "rfilename": "config.json"
+                },
+                {
+                  "rfilename": "model.safetensors"
+                },
+                {
+                  "rfilename": "preprocessor_config.json"
+                },
+                {
+                  "rfilename": "pytorch_model.bin"
+                },
+                {
+                  "rfilename": "tf_model.h5"
+                }
+              ],
+              "card_data": {
+                "license": "apache-2.0",
+                "language": [],
+                "tags": [
+                  "vision",
+                  "image-classification"
+                ],
+                "datasets": [
+                  "imagenet-1k"
+                ],
+                "task_categories": [],
+                "size_categories": [],
+                "metrics": [],
+                "widget": [
+                  {
+                    "src": "https://huggingface.co/datasets/mishig/sample_images/resolve/main/tiger.jpg",
+                    "example_title": "Tiger"
+                  },
+                  {
+                    "src": "https://huggingface.co/datasets/mishig/sample_images/resolve/main/teapot.jpg",
+                    "example_title": "Teapot"
+                  },
+                  {
+                    "src": "https://huggingface.co/datasets/mishig/sample_images/resolve/main/palace.jpg",
+                    "example_title": "Palace"
+                  }
+                ]
+              },
+              "tags": [
+                "transformers",
+                "pytorch",
+                "tf",
+                "safetensors",
+                "resnet",
+                "image-classification",
+                "vision",
+                "dataset:imagenet-1k",
+                "arxiv:1512.03385",
+                "license:apache-2.0",
+                "autotrain_compatible",
+                "endpoints_compatible",
+                "region:us"
+              ],
+              "pipeline_tag": "image-classification",
+              "library_name": "transformers",
+              "readme": "---\nlicense: apache-2.0\ntags:\n- vision\n- image-classification\n\ndatasets:\n- imagenet-1k\n\nwidget:\n- src: https://huggingface.co/datasets/mishig/sample_images/resolve/main/tiger.jpg\n  example_title: Tiger\n- src: https://huggingface.co/datasets/mishig/sample_images/resolve/main/teapot.jpg\n  example_title: Teapot\n- src: https://huggingface.co/datasets/mishig/sample_images/resolve/main/palace.jpg\n  example_title: Palace\n\n---\n\n# ResNet\n\nResNet model trained on imagenet-1k. It was introduced in the paper [Deep Residual Learning for Image Recognition](https://arxiv.org/abs/1512.03385) and first released in [this repository](https://github.com/KaimingHe/deep-residual-networks). \n\nDisclaimer: The team releasing ResNet did not write a model card for this model so this model card has been written by the Hugging Face team.\n\n## Model description\n\nResNet introduced residual connections, they allow to train networks with an unseen number of layers (up to 1000). ResNet won the 2015 ILSVRC & COCO competition, one important milestone in deep computer vision.\n\n![model image](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/resnet_architecture.png)\n\n## Intended uses & limitations\n\nYou can use the raw model for image classification. See the [model hub](https://huggingface.co/models?search=resnet) to look for\nfine-tuned versions on a task that interests you.\n\n### How to use\n\nHere is how to use this model:\n\n```python\n>>> from transformers import AutoImageProcessor, AutoModelForImageClassification\n>>> import torch\n>>> from datasets import load_dataset\n\n>>> dataset = load_dataset(\"huggingface/cats-image\")\n>>> image = dataset[\"test\"][\"image\"][0]\n\n>>> image_processor = AutoImageProcessor.from_pretrained(\"microsoft/resnet-18\")\n>>> model = AutoModelForImageClassification.from_pretrained(\"microsoft/resnet-18\")\n\n>>> inputs = image_processor(image, return_tensors=\"pt\")\n\n>>> with torch.no_grad():\n...     logits = model(**inputs).logits\n\n>>> # model predicts one of the 1000 ImageNet classes\n>>> predicted_label = logits.argmax(-1).item()\n>>> print(model.config.id2label[predicted_label])\ntiger cat\n```\n\n\n\nFor more code examples, we refer to the [documentation](https://huggingface.co/docs/transformers/master/en/model_doc/resnet).",
+              "extracted_code": "from transformers import AutoImageProcessor, AutoModelForImageClassification\nimport torch\nfrom datasets import load_dataset\n\ndataset = load_dataset(\"huggingface/cats-image\")\nimage = dataset[\"test\"][\"image\"][0]\n\nimage_processor = AutoImageProcessor.from_pretrained(\"microsoft/resnet-18\")\nmodel = AutoModelForImageClassification.from_pretrained(\"microsoft/resnet-18\")\n\ninputs = image_processor(image, return_tensors=\"pt\")\n\nwith torch.no_grad():\n    logits = model(**inputs).logits\n\n# model predicts one of the 1000 ImageNet classes\npredicted_label = logits.argmax(-1).item()\nprint(model.config.id2label[predicted_label])"
+            }
+          ],
+          "datasets": [
+            {
+              "id": "uoft-cs/cifar10",
+              "author": "uoft-cs",
+              "sha": "0b2714987fa478483af9968de7c934580d0bb9a2",
+              "created_at": "2022-03-02T23:29:22+00:00",
+              "last_modified": "2024-01-04T06:53:11+00:00",
+              "private": false,
+              "gated": false,
+              "disabled": false,
+              "downloads": 77515,
+              "likes": 87,
+              "siblings": [
+                {
+                  "rfilename": ".gitattributes"
+                },
+                {
+                  "rfilename": "README.md"
+                },
+                {
+                  "rfilename": "plain_text/test-00000-of-00001.parquet"
+                },
+                {
+                  "rfilename": "plain_text/train-00000-of-00001.parquet"
+                }
+              ],
+              "card_data": {
+                "license": [
+                  "unknown"
+                ],
+                "language": [
+                  "en"
+                ],
+                "tags": [],
+                "datasets": [],
+                "task_categories": [
+                  "image-classification"
+                ],
+                "size_categories": [
+                  "10K<n<100K"
+                ],
+                "metrics": [],
+                "widget": []
+              },
+              "tags": [
+                "task_categories:image-classification",
+                "annotations_creators:crowdsourced",
+                "language_creators:found",
+                "multilinguality:monolingual",
+                "source_datasets:extended|other-80-Million-Tiny-Images",
+                "language:en",
+                "license:unknown",
+                "size_categories:10K<n<100K",
+                "format:parquet",
+                "modality:image",
+                "library:datasets",
+                "library:pandas",
+                "library:mlcroissant",
+                "library:polars",
+                "region:us"
+              ],
+              "readme": "---\nannotations_creators:\n- crowdsourced\nlanguage_creators:\n- found\nlanguage:\n- en\nlicense:\n- unknown\nmultilinguality:\n- monolingual\nsize_categories:\n- 10K<n<100K\nsource_datasets:\n- extended|other-80-Million-Tiny-Images\ntask_categories:\n- image-classification\ntask_ids: []\npaperswithcode_id: cifar-10\npretty_name: Cifar10\ndataset_info:\n  config_name: plain_text\n  features:\n  - name: img\n    dtype: image\n  - name: label\n    dtype:\n      class_label:\n        names:\n          '0': airplane\n          '1': automobile\n          '2': bird\n          '3': cat\n          '4': deer\n          '5': dog\n          '6': frog\n          '7': horse\n          '8': ship\n          '9': truck\n  splits:\n  - name: train\n    num_bytes: 113648310.0\n    num_examples: 50000\n  - name: test\n    num_bytes: 22731580.0\n    num_examples: 10000\n  download_size: 143646105\n  dataset_size: 136379890.0\nconfigs:\n- config_name: plain_text\n  data_files:\n  - split: train\n    path: plain_text/train-*\n  - split: test\n    path: plain_text/test-*\n  default: true\n---\n\n# Dataset Card for CIFAR-10\n\n## Table of Contents\n- [Dataset Description](#dataset-description)\n  - [Dataset Summary](#dataset-summary)\n  - [Supported Tasks and Leaderboards](#supported-tasks-and-leaderboards)\n  - [Languages](#languages)\n- [Dataset Structure](#dataset-structure)\n  - [Data Instances](#data-instances)\n  - [Data Fields](#data-fields)\n  - [Data Splits](#data-splits)\n- [Dataset Creation](#dataset-creation)\n  - [Curation Rationale](#curation-rationale)\n  - [Source Data](#source-data)\n  - [Annotations](#annotations)\n  - [Personal and Sensitive Information](#personal-and-sensitive-information)\n- [Considerations for Using the Data](#considerations-for-using-the-data)\n  - [Social Impact of Dataset](#social-impact-of-dataset)\n  - [Discussion of Biases](#discussion-of-biases)\n  - [Other Known Limitations](#other-known-limitations)\n- [Additional Information](#additional-information)\n  - [Dataset Curators](#dataset-curators)\n  - [Licensing Information](#licensing-information)\n  - [Citation Information](#citation-information)\n  - [Contributions](#contributions)\n\n## Dataset Description\n\n- **Homepage:** https://www.cs.toronto.edu/~kriz/cifar.html\n- **Repository:** \n- **Paper:** Learning Multiple Layers of Features from Tiny Images by Alex Krizhevsky\n- **Leaderboard:**\n- **Point of Contact:**\n\n### Dataset Summary\n\nThe CIFAR-10 dataset consists of 60000 32x32 colour images in 10 classes, with 6000 images per class. There are 50000 training images and 10000 test images.\nThe dataset is divided into five training batches and one test batch, each with 10000 images. The test batch contains exactly 1000 randomly-selected images from each class. The training batches contain the remaining images in random order, but some training batches may contain more images from one class than another. Between them, the training batches contain exactly 5000 images from each class.\n\n### Supported Tasks and Leaderboards\n\n- `image-classification`: The goal of this task is to classify a given image into one of 10 classes. The leaderboard is available [here](https://paperswithcode.com/sota/image-classification-on-cifar-10).\n\n### Languages\n\nEnglish\n\n## Dataset Structure\n\n### Data Instances\n\nA sample from the training set is provided below:\n\n```\n{\n  'img': <PIL.PngImagePlugin.PngImageFile image mode=RGB size=32x32 at 0x201FA6EE748>,\n  'label': 0\n}\n```\n\n### Data Fields\n\n- img: A `PIL.Image.Image` object containing the 32x32 image. Note that when accessing the image column: `dataset[0][\"image\"]` the image file is automatically decoded. Decoding of a large number of image files might take a significant amount of time. Thus it is important to first query the sample index before the `\"image\"` column, *i.e.* `dataset[0][\"image\"]` should **always** be preferred over `dataset[\"image\"][0]`\n- label: 0-9 with the following correspondence\n         0 airplane\n         1 automobile\n         2 bird\n         3 cat\n         4 deer\n         5 dog\n         6 frog\n         7 horse\n         8 ship\n         9 truck\n\n### Data Splits\n\nTrain and Test\n\n## Dataset Creation\n\n### Curation Rationale\n\n[More Information Needed]\n\n### Source Data\n\n#### Initial Data Collection and Normalization\n\n[More Information Needed]\n\n#### Who are the source language producers?\n\n[More Information Needed]\n\n### Annotations\n\n#### Annotation process\n\n[More Information Needed]\n\n#### Who are the annotators?\n\n[More Information Needed]\n\n### Personal and Sensitive Information\n\n[More Information Needed]\n\n## Considerations for Using the Data\n\n### Social Impact of Dataset\n\n[More Information Needed]\n\n### Discussion of Biases\n\n[More Information Needed]\n\n### Other Known Limitations\n\n[More Information Needed]\n\n## Additional Information\n\n### Dataset Curators\n\n[More Information Needed]\n\n### Licensing Information\n\n[More Information Needed]\n\n### Citation Information\n\n```\n@TECHREPORT{Krizhevsky09learningmultiple,\n    author = {Alex Krizhevsky},\n    title = {Learning multiple layers of features from tiny images},\n    institution = {},\n    year = {2009}\n}\n```\n\n### Contributions\n\nThanks to [@czabo](https://github.com/czabo) for adding this dataset.",
+              "extracted_code": ""
+            }
+          ]
+        }
       }
     },
     "experiment_runs": [
