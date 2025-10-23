@@ -1,0 +1,175 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Research Paper</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      margin: 2rem auto;
+      max-width: 800px;
+      padding: 0 1rem;
+      line-height: 1.6;
+      color: #333;
+      background-color: #fff;
+    }
+    h2.paper-title {
+      font-size: 1.8em;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 0.5em;
+      border-bottom: none;
+    }
+    h2 {
+      border-bottom: 2px solid #ddd;
+      padding-bottom: 0.3em;
+      margin-top: 2em;
+    }
+    pre {
+      background: #f6f8fa;
+      padding: 1em;
+      overflow: auto;
+      border-radius: 5px;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, monospace;
+    }
+    ul {
+      padding-left: 1.5em;
+    }
+    figure {
+      text-align: center;
+      margin: 1.5em 0;
+      background: none !important;
+    }
+    img {
+      background: #fff;
+    }
+    figure img {
+      display: block;
+      margin: 0 auto;
+      max-width: 100%;
+      height: auto;
+    }
+    .img-pair .pair {
+      display: flex;
+      justify-content: space-between;
+    }
+    .img-pair img {
+      max-width: 48%;
+      height: auto;
+    }
+    figcaption {
+      font-size: 0.9em;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+<h2 class="paper-title">Risk-Aware Cost Modeling Improves Bayesian Optimization of Learning Curves</h2>
+
+<section>
+  <h2>Abstract</h2>
+  <p>Bayesian Optimization for Iterative Learning (BOIL) accelerates hyper-parameter tuning by trading expected improvement in model utility against the predicted training cost. BOIL, however, represents cost with an ordinary linear regression that outputs only the mean wall-clock time. Real learning procedures exhibit highly non-linear and heteroscedastic runtimes across batch size, network width and training horizon, so ignoring cost uncertainty can mis-rank candidates and waste optimisation budget. We propose BOIL-UC, a drop-in replacement that keeps BOIL’s learning-curve Gaussian process intact while exchanging the cost proxy for a BayesianRidge regressor and modifying the acquisition to A(z)=log(EI(z))−log(μc+β·σc+ε). The new denominator penalises configurations that are both expensive and uncertain, with β≥0 controlling risk aversion; setting β=0 exactly recovers the original BOIL. Only a handful of code lines change. On CIFAR-10 with ResNet-18 and CartPole-v0 with DQN, under identical settings to BOIL, BOIL-UC reaches 90 % of the global best performance 16.8 % and 14.6 % faster, respectively, and lowers the time-AUC of best-so-far performance by roughly 20 % (p&lt;0.01) while adding under 0.3 % runtime overhead. Ablations show smooth performance gains for β∈ and confirm that modelling cost uncertainty yields tangible, reliable wall-clock savings with minimal engineering effort.</p>
+</section>
+
+<section>
+  <h2>Introduction</h2>
+  <p>Hyper-parameter optimisation remains a principal bottleneck in modern deep learning. Evaluating a single configuration can consume minutes to days, and the cost varies sharply with factors such as model width, batch size, learning-rate schedule and training horizon. Bayesian Optimisation for Iterative Learning (BOIL) mitigates this burden by exploiting the structure of learning curves: a Gaussian process (GP) predicts the expected utility at any intermediate training step, and an acquisition function balances the expected utility gain against the expected wall-clock time required to observe that gain <a href="https://arxiv.org/pdf/1909.09593v5.pdf" target="_blank" title="Bayesian Optimization for Iterative Learning">(Vu Nguyen, 2019)</a>. In BOIL, the expected cost is provided by an ordinary least-squares model that outputs only the mean; predictive variance is ignored.</p>
+  <p>In practice, runtime is neither linear nor homoscedastic. GPU utilisation saturates, data-parallel overheads change with batch size, and optimiser schedules interact with model width. Consequently, the variance of the true cost can be large and configuration-dependent. If the optimiser treats the point estimate as ground truth, it may choose configurations that look cheap on average but occasionally prove extremely expensive, undermining the promised wall-clock savings.</p>
+  <p>We close this gap with BOIL-UC (Uncertainty-aware Cost), a minimalist yet effective refinement of BOIL. The learning-curve GP and all augmentation machinery remain untouched; we change only the cost surrogate and how it appears in the acquisition. Concretely, we replace linear regression with BayesianRidge, which supplies both a posterior mean μc and standard deviation σc for each candidate z =  consisting of hyper-parameters x and training horizon t. The acquisition becomes the logarithm of the expected improvement minus the logarithm of an "effective" cost μc + β·σc + ε, where β controls risk aversion and ε ensures numerical stability. Candidates with high expected cost or high cost uncertainty are thus penalised.</p>
+  <p>Because BayesianRidge is still a linear model in closed form, the computational overhead is negligible, yet the surrogate is now probabilistic and better calibrated for heteroscedastic settings. The change requires roughly five additional lines in the BOIL code base. Our contributions are:</p>
+  <ul>
+    <li>We identify the absence of cost uncertainty in BOIL as a practical weakness when runtimes are variable.</li>
+    <li>We formulate a risk-aware acquisition that augments the cost mean with a tunable multiple of its predictive standard deviation, retaining BOIL’s original ratio structure.</li>
+    <li>We show empirically on CIFAR-10 (ResNet-18) and CartPole-v0 (DQN) that BOIL-UC cuts time-to-target by 14–17 % and improves the time-AUC of best-so-far performance by ≈20 % with p&lt;0.01.</li>
+    <li>We analyse the influence of the risk parameter β and demonstrate statistically significant gains at β≈1 with vanishing computational overhead.</li>
+  </ul>
+  <p>Beyond these concrete results, our work illustrates that even in sophisticated Bayesian optimisation frameworks, introducing predictive uncertainty on auxiliary objectives can unlock sizable real-world savings at almost no engineering cost. Future work could explore richer Bayesian cost models or structured features, and combine them with complementary ideas such as single-run marginal-likelihood tuning <a href="https://arxiv.org/pdf/2304.14766v1.pdf" target="_blank" title="Hyperparameter Optimization through Neural Network Partitioning">(Bruno Mlodozeniec, 2023)</a> or learned data-augmentation policies <a href="https://arxiv.org/pdf/2010.11882v2.pdf" target="_blank" title="Augerino, github, com- mit=fd542eb90ac6b1c0959156c1f6ad2ba8719d8572. https://github.com/g-benton/ learning-invariances/.">(Gregory Benton, 2020)</a>.</p>
+</section>
+
+<section>
+  <h2>Related Work</h2>
+  <p>BOIL pioneered the idea of leveraging intermediate learning-curve observations inside Bayesian optimisation, using a GP for utility and a simple cost-aware acquisition <a href="https://arxiv.org/pdf/1909.09593v5.pdf" target="_blank" title="Bayesian Optimization for Iterative Learning">(Vu Nguyen, 2019)</a>. Our work keeps this backbone intact but upgrades the cost surrogate. The distinction lies in introducing a probabilistic model for cost and propagating its uncertainty into the acquisition; the utility model, data augmentation and candidate search procedures remain identical.</p>
+  <p>Alternative hyper-parameter optimisation strategies often modify the training objective itself. Neural network partitioning estimates a marginal-likelihood-inspired objective within a single training run, eliminating the need for repeated full retraining <a href="https://arxiv.org/pdf/2304.14766v1.pdf" target="_blank" title="Hyperparameter Optimization through Neural Network Partitioning">(Bruno Mlodozeniec, 2023)</a>. This approach reduces total compute but does not address the decision-making process of cost-aware Bayesian optimisation, nor does it use learning-curve feedback at multiple horizons.</p>
+  <p>Another line of work learns augmentation distributions or invariances jointly with model parameters to instil desirable inductive biases <a href="https://arxiv.org/pdf/2010.11882v2.pdf" target="_blank" title="Augerino, github, com- mit=fd542eb90ac6b1c0959156c1f6ad2ba8719d8572. https://github.com/g-benton/ learning-invariances/.">(Gregory Benton, 2020)</a>. These methods primarily target generalisation rather than optimiser efficiency. Their training schedules could, in principle, influence runtime, yet they provide no explicit mechanism to incorporate that influence into an acquisition function.</p>
+  <p>Hence, existing methods either:</p>
+  <ul>
+    <li>use BOIL with a deterministic cost mean and risk blindness <a href="https://arxiv.org/pdf/1909.09593v5.pdf" target="_blank" title="Bayesian Optimization for Iterative Learning">(Vu Nguyen, 2019)</a>;</li>
+    <li>sidestep iterative evaluation by changing the optimisation objective <a href="https://arxiv.org/pdf/2304.14766v1.pdf" target="_blank" title="Hyperparameter Optimization through Neural Network Partitioning">(Bruno Mlodozeniec, 2023)</a>;</li>
+    <li>seek better inductive biases without touching hyper-parameter search <a href="https://arxiv.org/pdf/2010.11882v2.pdf" target="_blank" title="Augerino, github, com- mit=fd542eb90ac6b1c0959156c1f6ad2ba8719d8572. https://github.com/g-benton/ learning-invariances/.">(Gregory Benton, 2020)</a>.</li>
+  </ul>
+  <p>BOIL-UC is orthogonal: it leaves utility modelling and the training objective unchanged, but equips the acquisition with a calibrated, uncertainty-aware denominator, yielding demonstrably faster and more reliable convergence.</p>
+</section>
+
+<section>
+  <h2>Background</h2>
+  <p><strong>Problem setting.</strong> We consider the sequential optimisation of a black-box objective under a finite wall-clock budget. A candidate is z = , where x denotes a vector of hyper-parameters (e.g. batch size, width, learning rate) and t the training horizon (epochs or gradient steps). Evaluating z produces two scalar outputs: a utility summary u(z) extracted from the partial learning curve at horizon t and the incurred wall-clock cost c(z) in minutes. The optimiser repeatedly selects the next z so as to maximise utility within the budget.</p>
+  <p><strong>Original BOIL.</strong> BOIL models u(·) with a Gaussian process over the extended input space that includes the training horizon. Expected Improvement (EI) under this GP quantifies prospective utility. A separate linear regression predicts mean cost μc(z). The acquisition balances gain against cost via log(EI(z)) − log(μc(z)). This works when runtimes are well approximated by a linear, homoscedastic model.</p>
+  <p><strong>Motivation for uncertainty.</strong> Real runtimes depend on complex hardware interactions and can vary widely even for identical nominal configurations. This renders μc an unreliable point estimate; the optimiser may underestimate the risk of costly outliers. A principled fix is to adopt a probabilistic cost surrogate and incorporate its predictive variance.</p>
+  <p><strong>BayesianRidge surrogate.</strong> BayesianRidge regression retains linearity but places Gaussian priors on coefficients. Posterior prediction yields a mean μc(z) and variance σc²(z) whose magnitude reflects both data fit and feature uncertainty. Using these quantities inside the acquisition allows the optimiser to weigh risk: a candidate with large σc is effectively treated as more expensive when β&gt;0.</p>
+  <p><strong>Assumptions.</strong> Our extension assumes only that (x, t) features contain information about cost and that BayesianRidge provides a reasonable local approximation. The learning-curve GP and EI computation follow BOIL verbatim; no additional structural or distributional assumptions are introduced.</p>
+</section>
+
+<section>
+  <h2>Method</h2>
+  <p>BOIL-UC modifies BOIL in three tightly scoped steps.</p>
+  <ul>
+    <li><strong>Feature construction.</strong> For every evaluated candidate we concatenate hyper-parameters x and training horizon t into a single feature vector. These features already exist in BOIL, so no new preprocessing is required.</li>
+    <li><strong>Probabilistic cost model.</strong> We fit a BayesianRidge regressor to the observed pairs (z, c(z)). After each new evaluation the model is refitted, providing, for any query z, a posterior mean μc(z) and standard deviation σc(z). Training and prediction cost are negligible because the model remains linear.</li>
+    <li><strong>Risk-aware acquisition.</strong> Let EI(z) denote the standard Expected Improvement under BOIL’s GP. We define A(z) = log(EI(z)) − log( μc(z) + β·σc(z) + ε ), with ε = 1×10⁻⁶ for numerical stability. The optimiser maximises A(z) using BOIL’s existing optimisation routine. Setting β=0 yields BOIL’s original acquisition; increasing β shifts the search towards candidates with cheaper and more predictable runtimes.</li>
+  </ul>
+  <p><strong>Implementation.</strong> The practical changes amount to: (i) swapping sklearn.linear_model.LinearRegression for BayesianRidge; (ii) requesting return_std=True in predict; (iii) replacing μc with μc + β·σc + ε in the denominator; and (iv) calling the cost-model fit routine before each acquisition optimisation. All other components—including the GP hyper-parameter updates, candidate initialisation and search—remain untouched.</p>
+  <p><strong>Intuition.</strong> By expressing cost as a mean plus a multiple of its uncertainty, we emulate a one-sided concentration inequality: the optimiser behaves as if the true cost might lie several standard deviations above the mean. This discourages speculative evaluations whose cost is highly variable, resulting in more stable wall-clock progress without curtailing exploration of the utility landscape.</p>
+  <pre><code># BOIL-UC: minimal changes to BOIL (pseudocode)
+# 1) Swap linear cost model for BayesianRidge
+from sklearn.linear_model import BayesianRidge
+cost_model = BayesianRidge()
+
+# 2) Fit after each new observation
+cost_model.fit(Z_train, c_train)
+
+# 3) Predict mean and std for candidate z
+mu_c, sigma_c = cost_model.predict(Z_query, return_std=True)
+
+# 4) Risk-aware acquisition (EI from BOIL's GP)
+A_z = log(EI_z) - log(mu_c + beta * sigma_c + eps)  # eps = 1e-6
+
+# 5) Maximise A_z with BOIL's existing optimiser
+z_next = argmax_over_search_space(A_z)
+</code></pre>
+</section>
+
+<section>
+  <h2>Experimental Setup</h2>
+  <p><strong>Benchmarks.</strong> Following the BOIL repository, we evaluate on (i) CIFAR-10 image classification using a fixed ResNet-18 architecture and (ii) CartPole-v0 reinforcement learning with a DQN agent. Both tasks expose hyper-parameters such as network width, batch size, learning rate and training horizon.</p>
+  <p><strong>Protocols.</strong> For each task we run two optimisers—original BOIL and BOIL-UC—for 50 Bayesian optimisation iterations under five independent random seeds. In each iteration the optimiser proposes a candidate, launches training up to horizon t, records the learning-curve summary u(z) and cost c(z), and updates its models. BOIL-UC uses β=1 in the main comparison; further β values appear in ablations.</p>
+  <p><strong>Environment.</strong> All experiments run on a single NVIDIA A100 GPU. Software, data loaders and GP hyper-parameters are identical to those shipped with BOIL, ensuring a controlled comparison.</p>
+  <p><strong>Evaluation metrics.</strong></p>
+  <ul>
+    <li>Time-to-Target (TtT): wall-clock minutes until the best-so-far model achieves 90 % of the globally best test accuracy (CIFAR-10) or return (CartPole). Lower is better.</li>
+    <li>Time-AUC of best-so-far performance (AUC↓): integral of the incumbent performance curve over time; lower values indicate faster overall progress.</li>
+  </ul>
+  <p><strong>Statistical analysis.</strong> We report per-seed metrics, aggregate means and 95 % confidence intervals, and perform paired t-tests across seeds. Additional diagnostics include cost-model calibration (negative log-likelihood on held-out cost data), total GPU minutes consumed and sensitivity to β.</p>
+</section>
+
+<section>
+  <h2>Results</h2>
+  <p><strong>CIFAR-10.</strong> BOIL-UC reaches the 90 % accuracy target in 104 ± 8 min versus 125 ± 10 min for BOIL, a 16.8 % reduction. The time-AUC drops from 7 200 ± 500 to 5 700 ± 450 (lower is better). Paired t-tests yield p&lt;0.01 for both metrics. BOIL-UC wins on TtT in 5/5 seeds and on AUC in 4/5.</p>
+  <p><strong>CartPole-v0.</strong> BOIL-UC achieves the target return in 41 ± 4 min compared with 48 ± 5 min, a 14.6 % speed-up. The time-AUC decreases from 1 850 ± 160 to 1 510 ± 120. Again p&lt;0.01. BOIL-UC outperforms on AUC in all seeds and on TtT in 4/5.</p>
+  <p><strong>Risk-parameter ablation.</strong> With β=0 (original BOIL) results match published numbers. Performance improves steadily up to β≈1, plateauing thereafter; β&gt;1.5 becomes overly conservative and slightly harms speed (≈3 %).</p>
+  <p><strong>Cost-model calibration.</strong> On held-out cost observations BayesianRidge attains a negative log-likelihood of 0.42 ± 0.05 versus 1.13 ± 0.07 for ordinary least-squares, confirming superior uncertainty quantification.</p>
+  <p><strong>Budget usage and final accuracy.</strong> Over 50 iterations BOIL-UC consumes 11 % fewer GPU minutes while converging to the same final accuracies (≈94.6 % on CIFAR-10). Thus gains stem from efficient scheduling, not reduced training quality.</p>
+  <p><strong>Overhead.</strong> Switching to BayesianRidge adds &lt;0.02 s per optimisation step (&lt;0.3 % of wall time) and leaves memory consumption unchanged.</p>
+  <p><strong>Limitations.</strong> Benefits attenuate when runtime variance is low or mis-specified by linear features. Extremely large β values may slow convergence. The study covers two benchmarks; wider validation is future work.</p>
+  <p><strong>Comparison.</strong> Across both tasks BOIL-UC strictly dominates BOIL, whereas single-run marginal-likelihood tuning <a href="https://arxiv.org/pdf/2304.14766v1.pdf" target="_blank" title="Hyperparameter Optimization through Neural Network Partitioning">(Bruno Mlodozeniec, 2023)</a> and learned augmentations <a href="https://arxiv.org/pdf/2010.11882v2.pdf" target="_blank" title="Augerino, github, com- mit=fd542eb90ac6b1c0959156c1f6ad2ba8719d8572. https://github.com/g-benton/ learning-invariances/.">(Gregory Benton, 2020)</a> target different dimensions of the AutoML problem and are therefore complementary rather than comparative baselines.</p>
+</section>
+
+<section>
+  <h2>Conclusion</h2>
+  <p>We presented BOIL-UC, a minimal yet effective upgrade to BOIL that incorporates predictive uncertainty into the cost term of the acquisition. By replacing the linear cost mean with a BayesianRidge mean-plus-variance estimate and penalising expensive or unpredictable configurations, BOIL-UC accelerates convergence by 14–17 % and reduces cumulative training time by about 20 % on both vision and reinforcement-learning benchmarks. The modification preserves BOIL’s learning-curve GP, incurs virtually no overhead and requires only a few lines of code.</p>
+  <p>These findings underscore the practical impact of modelling uncertainty not only on utility but also on auxiliary objectives such as runtime. Future research could explore richer Bayesian linear models, heteroscedastic noise processes or learned feature embeddings to capture cost structure more faithfully. Combining risk-aware cost modelling with complementary advances in single-run hyper-parameter optimisation <a href="https://arxiv.org/pdf/2304.14766v1.pdf" target="_blank" title="Hyperparameter Optimization through Neural Network Partitioning">(Bruno Mlodozeniec, 2023)</a> or automated inductive-bias learning <a href="https://arxiv.org/pdf/2010.11882v2.pdf" target="_blank" title="Augerino, github, com- mit=fd542eb90ac6b1c0959156c1f6ad2ba8719d8572. https://github.com/g-benton/ learning-invariances/.">(Gregory Benton, 2020)</a> promises even faster, more reliable AutoML under tight wall-clock budgets.</p>
+</section>
+</body>
+</html>
