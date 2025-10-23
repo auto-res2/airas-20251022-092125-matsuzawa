@@ -291,3 +291,137 @@ Traceback (most recent call last):
 subprocess.CalledProcessError: Command '['/home/toma/t-80-8-b-03/_work/airas-20251022-092125-matsuzawa/airas-20251022-092125-matsuzawa/.venv/bin/python3', '-u', '-m', 'src.train', 'run=proposed-ResNet-18-11.7-M--CIFAR-10', 'results_dir=.research/iteration1', 'hydra.run.dir=.research/iteration1/proposed-ResNet-18-11.7-M--CIFAR-10/hydra']' returned non-zero exit status 1.
 
 Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
+Using CPython 3.11.13
+Creating virtual environment at: .venv
+warning: No `requires-python` value found in the workspace. Defaulting to `>=3.11`.
+Resolved 76 packages in 69ms
+Installed 73 packages in 4.84s
+ + alembic==1.17.0
+ + annotated-types==0.7.0
+ + antlr4-python3-runtime==4.9.3
+ + certifi==2025.10.5
+ + charset-normalizer==3.4.4
+ + click==8.3.0
+ + colorlog==6.10.1
+ + contourpy==1.3.3
+ + cycler==0.12.1
+ + filelock==3.20.0
+ + fonttools==4.60.1
+ + fsspec==2025.9.0
+ + gitdb==4.0.12
+ + gitpython==3.1.45
+ + greenlet==3.2.4
+ + hydra-core==1.3.2
+ + idna==3.11
+ + jinja2==3.1.6
+ + joblib==1.5.2
+ + kiwisolver==1.4.9
+ + mako==1.3.10
+ + markupsafe==3.0.3
+ + matplotlib==3.10.7
+ + mpmath==1.3.0
+ + networkx==3.5
+ + numpy==2.3.4
+ + nvidia-cublas-cu12==12.8.4.1
+ + nvidia-cuda-cupti-cu12==12.8.90
+ + nvidia-cuda-nvrtc-cu12==12.8.93
+ + nvidia-cuda-runtime-cu12==12.8.90
+ + nvidia-cudnn-cu12==9.10.2.21
+ + nvidia-cufft-cu12==11.3.3.83
+ + nvidia-cufile-cu12==1.13.1.3
+ + nvidia-curand-cu12==10.3.9.90
+ + nvidia-cusolver-cu12==11.7.3.90
+ + nvidia-cusparse-cu12==12.5.8.93
+ + nvidia-cusparselt-cu12==0.7.1
+ + nvidia-nccl-cu12==2.27.5
+ + nvidia-nvjitlink-cu12==12.8.93
+ + nvidia-nvshmem-cu12==3.3.20
+ + nvidia-nvtx-cu12==12.8.90
+ + omegaconf==2.3.0
+ + optuna==4.5.0
+ + packaging==25.0
+ + pandas==2.3.3
+ + pillow==12.0.0
+ + platformdirs==4.5.0
+ + protobuf==6.33.0
+ + pydantic==2.12.3
+ + pydantic-core==2.41.4
+ + pyparsing==3.2.5
+ + python-dateutil==2.9.0.post0
+ + pytz==2025.2
+ + pyyaml==6.0.3
+ + requests==2.32.5
+ + scikit-learn==1.7.2
+ + scipy==1.16.2
+ + seaborn==0.13.2
+ + sentry-sdk==2.42.1
+ + six==1.17.0
+ + smmap==5.0.2
+ + sqlalchemy==2.0.44
+ + sympy==1.14.0
+ + threadpoolctl==3.6.0
+ + torch==2.9.0
+ + torchvision==0.24.0
+ + tqdm==4.67.1
+ + triton==3.5.0
+ + typing-extensions==4.15.0
+ + typing-inspection==0.4.2
+ + tzdata==2025.2
+ + urllib3==2.5.0
+ + wandb==0.22.2
+warning: No `requires-python` value found in the workspace. Defaulting to `>=3.11`.
+/home/toma/t-80-8-a/_work/airas-20251022-092125-matsuzawa/airas-20251022-092125-matsuzawa/.venv/lib/python3.11/site-packages/hydra/_internal/defaults_list.py:251: UserWarning: In 'config': Defaults list is missing `_self_`. See https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/default_composition_order for more information
+  warnings.warn(msg, UserWarning)
+/home/toma/t-80-8-a/_work/airas-20251022-092125-matsuzawa/airas-20251022-092125-matsuzawa/.venv/lib/python3.11/site-packages/pydantic/_internal/_generate_schema.py:2249: UnsupportedFieldAttributeWarning: The 'repr' attribute with value False was provided to the `Field()` function, which has no effect in the context it was used. 'repr' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+/home/toma/t-80-8-a/_work/airas-20251022-092125-matsuzawa/airas-20251022-092125-matsuzawa/.venv/lib/python3.11/site-packages/pydantic/_internal/_generate_schema.py:2249: UnsupportedFieldAttributeWarning: The 'frozen' attribute with value True was provided to the `Field()` function, which has no effect in the context it was used. 'frozen' is field-specific metadata, and can only be attached to a model field using `Annotated` metadata or by assignment. This may have happened because an `Annotated` type alias using the `type` statement was used, or if the `Field()` function was attached to a single member of a union type.
+  warnings.warn(
+/home/toma/t-80-8-a/_work/airas-20251022-092125-matsuzawa/airas-20251022-092125-matsuzawa/.venv/lib/python3.11/site-packages/hydra/_internal/defaults_list.py:251: UserWarning: In 'config': Defaults list is missing `_self_`. See https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/default_composition_order for more information
+  warnings.warn(msg, UserWarning)
+  0%|          | 0.00/170M [00:00<?, ?B/s]  0%|          | 32.8k/170M [00:00<15:47, 180kB/s]  0%|          | 65.5k/170M [00:00<15:40, 181kB/s]  0%|          | 98.3k/170M [00:00<15:29, 183kB/s]  0%|          | 229k/170M [00:00<07:08, 397kB/s]   0%|          | 459k/170M [00:00<03:58, 713kB/s]  1%|          | 918k/170M [00:01<02:07, 1.33MB/s]  1%|          | 1.84M/170M [00:01<01:06, 2.55MB/s]  2%|▏         | 3.70M/170M [00:01<00:33, 5.02MB/s]  4%|▍         | 6.62M/170M [00:01<00:19, 8.41MB/s]  6%|▌         | 9.54M/170M [00:01<00:15, 10.7MB/s]  7%|▋         | 12.6M/170M [00:01<00:12, 12.6MB/s]  9%|▉         | 15.7M/170M [00:02<00:11, 13.8MB/s] 11%|█         | 18.6M/170M [00:02<00:10, 14.5MB/s] 13%|█▎        | 21.6M/170M [00:02<00:09, 14.9MB/s] 14%|█▍        | 24.6M/170M [00:02<00:09, 15.4MB/s] 16%|█▌        | 27.4M/170M [00:02<00:09, 15.4MB/s] 18%|█▊        | 30.4M/170M [00:03<00:09, 15.5MB/s] 20%|█▉        | 33.3M/170M [00:03<00:08, 15.6MB/s] 21%|██▏       | 36.3M/170M [00:03<00:08, 15.9MB/s] 23%|██▎       | 39.5M/170M [00:03<00:08, 16.1MB/s] 25%|██▍       | 42.5M/170M [00:03<00:07, 16.2MB/s] 27%|██▋       | 45.7M/170M [00:04<00:07, 16.5MB/s] 29%|██▊       | 48.8M/170M [00:04<00:07, 16.6MB/s] 30%|███       | 51.9M/170M [00:04<00:07, 16.6MB/s] 32%|███▏      | 55.1M/170M [00:04<00:06, 16.9MB/s] 34%|███▍      | 58.2M/170M [00:04<00:06, 16.9MB/s] 36%|███▌      | 61.3M/170M [00:04<00:06, 17.0MB/s] 38%|███▊      | 64.5M/170M [00:05<00:06, 17.0MB/s] 40%|███▉      | 67.6M/170M [00:05<00:06, 16.5MB/s] 41%|████▏     | 70.6M/170M [00:05<00:06, 16.4MB/s] 43%|████▎     | 73.7M/170M [00:05<00:05, 16.6MB/s] 45%|████▌     | 76.8M/170M [00:05<00:05, 16.8MB/s] 47%|████▋     | 80.0M/170M [00:06<00:05, 16.9MB/s] 49%|████▊     | 83.1M/170M [00:06<00:05, 17.0MB/s] 51%|█████     | 86.1M/170M [00:06<00:04, 16.9MB/s] 52%|█████▏    | 89.2M/170M [00:06<00:04, 16.9MB/s] 54%|█████▍    | 92.3M/170M [00:06<00:04, 16.9MB/s] 56%|█████▌    | 95.5M/170M [00:06<00:04, 16.9MB/s] 58%|█████▊    | 98.5M/170M [00:07<00:04, 17.1MB/s] 59%|█████▉    | 101M/170M [00:07<00:03, 19.0MB/s]  61%|██████    | 103M/170M [00:07<00:03, 17.9MB/s] 62%|██████▏   | 105M/170M [00:07<00:04, 15.6MB/s] 63%|██████▎   | 108M/170M [00:07<00:04, 15.2MB/s] 65%|██████▍   | 111M/170M [00:07<00:03, 15.3MB/s] 67%|██████▋   | 114M/170M [00:08<00:03, 15.8MB/s] 68%|██████▊   | 117M/170M [00:08<00:03, 16.0MB/s] 70%|███████   | 120M/170M [00:08<00:03, 16.2MB/s] 72%|███████▏  | 123M/170M [00:08<00:02, 16.2MB/s] 74%|███████▍  | 126M/170M [00:08<00:02, 16.5MB/s] 76%|███████▌  | 129M/170M [00:09<00:02, 16.5MB/s] 77%|███████▋  | 132M/170M [00:09<00:02, 16.3MB/s] 79%|███████▉  | 135M/170M [00:09<00:02, 16.2MB/s] 81%|████████  | 138M/170M [00:09<00:02, 16.1MB/s] 83%|████████▎ | 141M/170M [00:09<00:01, 16.0MB/s] 84%|████████▍ | 144M/170M [00:09<00:01, 15.9MB/s] 86%|████████▌ | 147M/170M [00:10<00:01, 18.1MB/s] 87%|████████▋ | 149M/170M [00:10<00:01, 16.6MB/s] 88%|████████▊ | 150M/170M [00:10<00:01, 15.5MB/s] 89%|████████▉ | 153M/170M [00:10<00:01, 14.6MB/s] 91%|█████████ | 155M/170M [00:10<00:01, 15.0MB/s] 93%|█████████▎| 158M/170M [00:10<00:00, 17.8MB/s] 94%|█████████▍| 160M/170M [00:10<00:00, 16.3MB/s] 95%|█████████▌| 162M/170M [00:11<00:00, 15.1MB/s] 96%|█████████▋| 164M/170M [00:11<00:00, 14.5MB/s] 98%|█████████▊| 167M/170M [00:11<00:00, 14.8MB/s]100%|█████████▉| 170M/170M [00:11<00:00, 15.0MB/s]100%|██████████| 170M/170M [00:11<00:00, 14.6MB/s]
+/home/toma/t-80-8-a/_work/airas-20251022-092125-matsuzawa/airas-20251022-092125-matsuzawa/.venv/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:440: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-05. Decreasing the bound and calling fit again may find a better value.
+  warnings.warn(
+/home/toma/t-80-8-a/_work/airas-20251022-092125-matsuzawa/airas-20251022-092125-matsuzawa/.venv/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:440: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-05. Decreasing the bound and calling fit again may find a better value.
+  warnings.warn(
+/home/toma/t-80-8-a/_work/airas-20251022-092125-matsuzawa/airas-20251022-092125-matsuzawa/.venv/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:440: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-05. Decreasing the bound and calling fit again may find a better value.
+  warnings.warn(
+/home/toma/t-80-8-a/_work/airas-20251022-092125-matsuzawa/airas-20251022-092125-matsuzawa/.venv/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:440: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-05. Decreasing the bound and calling fit again may find a better value.
+  warnings.warn(
+/home/toma/t-80-8-a/_work/airas-20251022-092125-matsuzawa/airas-20251022-092125-matsuzawa/.venv/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:440: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-05. Decreasing the bound and calling fit again may find a better value.
+  warnings.warn(
+/home/toma/t-80-8-a/_work/airas-20251022-092125-matsuzawa/airas-20251022-092125-matsuzawa/.venv/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:440: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-05. Decreasing the bound and calling fit again may find a better value.
+  warnings.warn(
+/home/toma/t-80-8-a/_work/airas-20251022-092125-matsuzawa/airas-20251022-092125-matsuzawa/.venv/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:440: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-05. Decreasing the bound and calling fit again may find a better value.
+  warnings.warn(
+/home/toma/t-80-8-a/_work/airas-20251022-092125-matsuzawa/airas-20251022-092125-matsuzawa/.venv/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:440: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-05. Decreasing the bound and calling fit again may find a better value.
+  warnings.warn(
+/home/toma/t-80-8-a/_work/airas-20251022-092125-matsuzawa/airas-20251022-092125-matsuzawa/.venv/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:450: ConvergenceWarning: The optimal value found for dimension 0 of parameter k1__k1__constant_value is close to the specified upper bound 10.0. Increasing the bound and calling fit again may find a better value.
+  warnings.warn(
+/home/toma/t-80-8-a/_work/airas-20251022-092125-matsuzawa/airas-20251022-092125-matsuzawa/.venv/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:450: ConvergenceWarning: The optimal value found for dimension 0 of parameter k1__k1__constant_value is close to the specified upper bound 10.0. Increasing the bound and calling fit again may find a better value.
+  warnings.warn(
+/home/toma/t-80-8-a/_work/airas-20251022-092125-matsuzawa/airas-20251022-092125-matsuzawa/.venv/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:450: ConvergenceWarning: The optimal value found for dimension 0 of parameter k1__k1__constant_value is close to the specified upper bound 10.0. Increasing the bound and calling fit again may find a better value.
+  warnings.warn(
+/home/toma/t-80-8-a/_work/airas-20251022-092125-matsuzawa/airas-20251022-092125-matsuzawa/.venv/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:450: ConvergenceWarning: The optimal value found for dimension 0 of parameter k1__k1__constant_value is close to the specified upper bound 10.0. Increasing the bound and calling fit again may find a better value.
+  warnings.warn(
+/home/toma/t-80-8-a/_work/airas-20251022-092125-matsuzawa/airas-20251022-092125-matsuzawa/.venv/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:450: ConvergenceWarning: The optimal value found for dimension 0 of parameter k1__k1__constant_value is close to the specified upper bound 10.0. Increasing the bound and calling fit again may find a better value.
+  warnings.warn(
+/home/toma/t-80-8-a/_work/airas-20251022-092125-matsuzawa/airas-20251022-092125-matsuzawa/.venv/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:440: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-05. Decreasing the bound and calling fit again may find a better value.
+  warnings.warn(
+/home/toma/t-80-8-a/_work/airas-20251022-092125-matsuzawa/airas-20251022-092125-matsuzawa/.venv/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:450: ConvergenceWarning: The optimal value found for dimension 0 of parameter k1__k1__constant_value is close to the specified upper bound 10.0. Increasing the bound and calling fit again may find a better value.
+  warnings.warn(
+/home/toma/t-80-8-a/_work/airas-20251022-092125-matsuzawa/airas-20251022-092125-matsuzawa/.venv/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:450: ConvergenceWarning: The optimal value found for dimension 0 of parameter k1__k1__constant_value is close to the specified upper bound 10.0. Increasing the bound and calling fit again may find a better value.
+  warnings.warn(
+/home/toma/t-80-8-a/_work/airas-20251022-092125-matsuzawa/airas-20251022-092125-matsuzawa/.venv/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:450: ConvergenceWarning: The optimal value found for dimension 0 of parameter k1__k1__constant_value is close to the specified upper bound 10.0. Increasing the bound and calling fit again may find a better value.
+  warnings.warn(
+/home/toma/t-80-8-a/_work/airas-20251022-092125-matsuzawa/airas-20251022-092125-matsuzawa/.venv/lib/python3.11/site-packages/sklearn/gaussian_process/_gpr.py:663: ConvergenceWarning: lbfgs failed to converge after 13 iteration(s) (status=2):
+ABNORMAL: 
+
+You might also want to scale the data as shown in:
+    https://scikit-learn.org/stable/modules/preprocessing.html
+  _check_optimize_result("lbfgs", opt_res)
+/home/toma/t-80-8-a/_work/airas-20251022-092125-matsuzawa/airas-20251022-092125-matsuzawa/.venv/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:440: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-05. Decreasing the bound and calling fit again may find a better value.
+  warnings.warn(
+/home/toma/t-80-8-a/_work/airas-20251022-092125-matsuzawa/airas-20251022-092125-matsuzawa/.venv/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:440: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-05. Decreasing the bound and calling fit again may find a better value.
+  warnings.warn(
+/home/toma/t-80-8-a/_work/airas-20251022-092125-matsuzawa/airas-20251022-092125-matsuzawa/.venv/lib/python3.11/site-packages/sklearn/gaussian_process/kernels.py:440: ConvergenceWarning: The optimal value found for dimension 0 of parameter k2__noise_level is close to the specified lower bound 1e-05. Decreasing the bound and calling fit again may find a better value.
+  warnings.warn(
